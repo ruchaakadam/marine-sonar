@@ -6,6 +6,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from ultralytics import YOLO
 
+from datetime import datetime
+
+from fastapi.responses import StreamingResponse
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+)
 
 app = FastAPI(
     title="Marine Sonar API",
@@ -535,4 +550,389 @@ async def track_scans(data: dict):
         raise HTTPException(
             status_code=500,
             detail=f"Target tracking failed: {str(e)}",
+        )
+# ============================================================
+# PDF INCIDENT REPORT
+# ============================================================
+
+@app.post("/api/report")
+async def generate_report(data: dict):
+    try:
+        buffer = BytesIO()
+
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            rightMargin=40,
+            leftMargin=40,
+            topMargin=40,
+            bottomMargin=40,
+        )
+
+        styles = getSampleStyleSheet()
+
+        title_style = ParagraphStyle(
+            "ReportTitle",
+            parent=styles["Title"],
+            fontSize=22,
+            leading=26,
+            alignment=TA_CENTER,
+            spaceAfter=18,
+        )
+
+        heading_style = ParagraphStyle(
+            "ReportHeading",
+            parent=styles["Heading2"],
+            fontSize=14,
+            leading=18,
+            spaceBefore=12,
+            spaceAfter=8,
+        )
+
+        body_style = ParagraphStyle(
+            "ReportBody",
+            parent=styles["BodyText"],
+            fontSize=10,
+            leading=15,
+            spaceAfter=6,
+        )
+
+        story = []
+
+        # ----------------------------------------------------
+        # TITLE
+        # ----------------------------------------------------
+
+        story.append(
+            Paragraph(
+                "MARINE SONAR AI<br/>INCIDENT & TARGET ANALYSIS REPORT",
+                title_style,
+            )
+        )
+
+        story.append(
+            Paragraph(
+                f"Generated: {datetime.now().strftime('%d %B %Y, %H:%M:%S')}",
+                body_style,
+            )
+        )
+
+        story.append(Spacer(1, 10))
+
+        # ----------------------------------------------------
+        # SCAN INFORMATION
+        # ----------------------------------------------------
+
+        story.append(Paragraph("1. SCAN INFORMATION", heading_style))
+
+        image_info = data.get("image", {})
+        filename = data.get("filename", "Unknown")
+
+        scan_data = [
+            ["Image File", str(filename)],
+            [
+                "Image Size",
+                f"{image_info.get('width', '—')} × "
+                f"{image_info.get('height', '—')} px",
+            ],
+            ["Model Used", str(data.get("model", "Unknown"))],
+            [
+                "Confidence Threshold",
+                str(data.get("confidence_threshold", "—")),
+            ],
+            [
+                "NMS IoU Threshold",
+                str(data.get("nms_iou_threshold", "—")),
+            ],
+        ]
+
+        scan_table = Table(
+            scan_data,
+            colWidths=[170, 330],
+        )
+
+        scan_table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#0b2433")),
+                    ("TEXTCOLOR", (0, 0), (-1, -1), colors.black),
+                    ("TEXTCOLOR", (0, 0), (0, -1), colors.white),
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                    ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                    ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 9),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("PADDING", (0, 0), (-1, -1), 7),
+                ]
+            )
+        )
+
+        story.append(scan_table)
+
+        # ----------------------------------------------------
+        # TARGET ANALYSIS
+        # ----------------------------------------------------
+
+        analysis = data.get("target_analysis", {})
+
+        story.append(
+            Paragraph("2. TARGET ANALYSIS", heading_style)
+        )
+
+        target_data = [
+            ["Status", str(analysis.get("status", "—"))],
+            ["Target", str(analysis.get("target", "No target"))],
+            [
+                "Possible Impact Object",
+                str(
+                    analysis.get(
+                        "possible_impact_object",
+                        "—"
+                    )
+                ),
+            ],
+            [
+                "Confidence",
+                f"{round(float(analysis.get('confidence', 0)) * 100)}%",
+            ],
+            [
+                "Risk Level",
+                str(analysis.get("risk_level", "—")),
+            ],
+            [
+                "Impact Assessment",
+                str(
+                    analysis.get(
+                        "impact_assessment",
+                        "—"
+                    )
+                ),
+            ],
+        ]
+
+        target_table = Table(
+            target_data,
+            colWidths=[170, 330],
+        )
+
+        target_table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#0b2433")),
+                    ("TEXTCOLOR", (0, 0), (0, -1), colors.white),
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                    ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+                    ("FONTSIZE", (0, 0), (-1, -1), 9),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("PADDING", (0, 0), (-1, -1), 7),
+                ]
+            )
+        )
+
+        story.append(target_table)
+
+        # ----------------------------------------------------
+        # AI ASSESSMENT
+        # ----------------------------------------------------
+
+        story.append(
+            Paragraph("3. AI ASSESSMENT", heading_style)
+        )
+
+        assessment = analysis.get(
+            "assessment",
+            "No assessment available."
+        )
+
+        story.append(
+            Paragraph(str(assessment), body_style)
+        )
+
+        # ----------------------------------------------------
+        # RECOMMENDED ACTION
+        # ----------------------------------------------------
+
+        story.append(
+            Paragraph("4. RECOMMENDED NAVIGATION ACTION", heading_style)
+        )
+
+        recommended_action = analysis.get(
+            "recommended_action",
+            "Maintain monitoring and verify the target."
+        )
+
+        story.append(
+            Paragraph(
+                f"<b>{recommended_action}</b>",
+                body_style,
+            )
+        )
+
+        # ----------------------------------------------------
+        # EVIDENCE
+        # ----------------------------------------------------
+
+        story.append(
+            Paragraph("5. DETECTION EVIDENCE", heading_style)
+        )
+
+        evidence = analysis.get("evidence", [])
+
+        if evidence:
+            for item in evidence:
+                story.append(
+                    Paragraph(
+                        f"• {str(item)}",
+                        body_style,
+                    )
+                )
+        else:
+            story.append(
+                Paragraph(
+                    "No additional evidence available.",
+                    body_style,
+                )
+            )
+
+        # ----------------------------------------------------
+        # DETECTIONS
+        # ----------------------------------------------------
+
+        story.append(
+            Paragraph("6. DETECTED OBJECTS", heading_style)
+        )
+
+        detections = data.get("detections", [])
+
+        if detections:
+            detection_data = [
+                ["#", "Object", "Confidence", "Bounding Box"]
+            ]
+
+            for index, detection in enumerate(
+                detections,
+                start=1
+            ):
+                bbox = detection.get("bbox", {})
+
+                bbox_text = (
+                    f"({bbox.get('x1', '—')}, "
+                    f"{bbox.get('y1', '—')}) → "
+                    f"({bbox.get('x2', '—')}, "
+                    f"{bbox.get('y2', '—')})"
+                )
+
+                detection_data.append(
+                    [
+                        str(index),
+                        str(
+                            detection.get(
+                                "class_name",
+                                "unknown"
+                            )
+                        ),
+                        f"{round(float(detection.get('confidence', 0)) * 100)}%",
+                        bbox_text,
+                    ]
+                )
+
+            detection_table = Table(
+                detection_data,
+                colWidths=[30, 120, 80, 270],
+            )
+
+            detection_table.setStyle(
+                TableStyle(
+                    [
+                        (
+                            "BACKGROUND",
+                            (0, 0),
+                            (-1, 0),
+                            colors.HexColor("#0b2433"),
+                        ),
+                        (
+                            "TEXTCOLOR",
+                            (0, 0),
+                            (-1, 0),
+                            colors.white,
+                        ),
+                        (
+                            "GRID",
+                            (0, 0),
+                            (-1, -1),
+                            0.5,
+                            colors.grey,
+                        ),
+                        (
+                            "FONTNAME",
+                            (0, 0),
+                            (-1, 0),
+                            "Helvetica-Bold",
+                        ),
+                        (
+                            "FONTSIZE",
+                            (0, 0),
+                            (-1, -1),
+                            8,
+                        ),
+                        (
+                            "VALIGN",
+                            (0, 0),
+                            (-1, -1),
+                            "TOP",
+                        ),
+                        (
+                            "PADDING",
+                            (0, 0),
+                            (-1, -1),
+                            6,
+                        ),
+                    ]
+                )
+            )
+
+            story.append(detection_table)
+
+        else:
+            story.append(
+                Paragraph(
+                    "No objects were detected.",
+                    body_style,
+                )
+            )
+
+        # ----------------------------------------------------
+        # DISCLAIMER
+        # ----------------------------------------------------
+
+        story.append(Spacer(1, 18))
+
+        story.append(
+            Paragraph(
+                "<b>IMPORTANT:</b> Sonar imagery and AI detection "
+                "provide decision-support information. A detected "
+                "target does not independently prove physical vessel "
+                "impact. Secondary verification is recommended.",
+                body_style,
+            )
+        )
+
+        # Build PDF
+        doc.build(story)
+
+        buffer.seek(0)
+
+        return StreamingResponse(
+            buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition":
+                    'attachment; filename="marine_sonar_incident_report.pdf"'
+            },
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"PDF report generation failed: {str(e)}",
         )

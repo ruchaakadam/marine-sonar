@@ -1099,6 +1099,314 @@
     }
 
 }
+/* =========================================================
+   INCIDENT REPORT
+========================================================= */
+
+.report-card {
+    margin-top: 20px;
+    padding: 17px;
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(124, 58, 237, 0.10),
+            rgba(0, 229, 255, 0.035)
+        );
+
+    border: 1px solid rgba(124, 58, 237, 0.30);
+
+    box-shadow:
+        0 0 20px rgba(124, 58, 237, 0.05);
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #b69cff;
+    font-size: 13px;
+    letter-spacing: .5px;
+    margin-bottom: 10px;
+}
+
+.report-description {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.5;
+    margin-bottom: 13px;
+}
+
+.report-button {
+    width: 100%;
+    padding: 12px;
+
+    border: 1px solid rgba(124, 58, 237, 0.45);
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(124, 58, 237, 0.85),
+            rgba(0, 180, 220, 0.85)
+        );
+
+    color: white;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .5px;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.report-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+
+    box-shadow:
+        0 0 22px rgba(124, 58, 237, 0.22);
+}
+
+.report-button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+.stats-card {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid rgba(0, 200, 255, 0.25);
+    border-radius: 12px;
+    background: rgba(5, 20, 35, 0.75);
+}
+
+.stats-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    color: #00d9ff;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 14px 8px;
+    border-radius: 8px;
+    background: rgba(0, 150, 220, 0.08);
+}
+
+.stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    opacity: 0.65;
+}
+
+@media (max-width: 700px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.history-card {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid rgba(0, 200, 255, 0.25);
+    border-radius: 12px;
+    background: rgba(5, 20, 35, 0.75);
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: #00d9ff;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.history-empty {
+    padding: 14px;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.55;
+}
+
+.history-item {
+    display: grid;
+    grid-template-columns: 70px 1fr 90px;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(0, 150, 220, 0.08);
+    font-size: 12px;
+}
+
+.history-scan {
+    font-weight: 700;
+    color: #00d9ff;
+}
+
+.history-targets {
+    opacity: 0.8;
+}
+
+.history-risk {
+    text-align: right;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.history-risk {
+    font-size: 11px;
+}
+
+@media (max-width: 700px) {
+    .history-item {
+        grid-template-columns: 60px 1fr 75px;
+        font-size: 11px;
+    }
+}
+.map-card {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid rgba(0, 200, 255, 0.25);
+    border-radius: 12px;
+    background: rgba(5, 20, 35, 0.75);
+}
+
+.map-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: #00d9ff;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.mission-map {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(0, 35, 55, 0.65);
+    border: 1px solid rgba(0, 200, 255, 0.18);
+}
+
+.map-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 200, 255, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 200, 255, 0.10) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.map-label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(0, 217, 255, 0.7);
+    z-index: 2;
+}
+
+.map-north {
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.map-south {
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.map-east {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.map-west {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.vessel-marker {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    z-index: 3;
+    filter: drop-shadow(0 0 8px rgba(0, 217, 255, 0.8));
+}
+
+.map-status {
+    position: absolute;
+    bottom: 10px;
+    left: 14px;
+    z-index: 3;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: rgba(0, 15, 25, 0.8);
+    font-size: 10px;
+    letter-spacing: 0.7px;
+    color: rgba(220, 245, 255, 0.7);
+}
+
+.map-status span {
+    color: #00ff9d;
+}
+.target-marker {
+    position: absolute;
+    left: 50%;
+    top: 25%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    z-index: 4;
+    filter: drop-shadow(0 0 8px rgba(255, 180, 0, 0.8));
+    transition: left 0.4s ease, top 0.4s ease;
+}
+
+.course-indicator {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    z-index: 4;
+    transition: left 0.4s ease, top 0.4s ease, transform 0.4s ease;
+}
     </style>
 </head>
 
@@ -1405,8 +1713,8 @@
 </div>
 
             </div>
-            <!-- =====================================================
-     MULTI-SCAN TARGET TRACKING
+<!-- =====================================================
+ MULTI-SCAN TARGET TRACKING
 ===================================================== -->
 
 <div class="tracking-card" id="trackingCard">
@@ -1496,6 +1804,112 @@
 
 </div>
 
+<div class="stats-card" id="statsCard">
+    <div class="stats-header">
+        <span>📊</span>
+        <strong>MISSION STATISTICS</strong>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-value" id="totalScans">0</span>
+            <span class="stat-label">TOTAL SCANS</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-value" id="totalTargets">0</span>
+            <span class="stat-label">TARGETS</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-value" id="highRiskTargets">0</span>
+            <span class="stat-label">HIGH RISK</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-value" id="averageConfidence">0%</span>
+            <span class="stat-label">AVG CONFIDENCE</span>
+        </div>
+    </div>
+</div>
+<div class="history-card" id="historyCard">
+    <div class="history-header">
+        <span>📋</span>
+        <strong>MISSION LOG</strong>
+    </div>
+
+    <div class="history-list" id="historyList">
+        <div class="history-empty">
+            No scans recorded yet.
+        </div>
+    </div>
+</div>
+<div class="map-card" id="mapCard">
+    <div class="map-header">
+        <span>🗺️</span>
+        <strong>MISSION MAP</strong>
+    </div>
+
+    <div class="mission-map" id="missionMap">
+        <div class="map-grid"></div>
+
+        <div class="map-label map-north">N</div>
+        <div class="map-label map-south">S</div>
+        <div class="map-label map-east">E</div>
+        <div class="map-label map-west">W</div>
+
+        <div class="vessel-marker" id="vesselMarker">
+            🚢
+        </div>
+        <div class="target-marker" id="targetMarker">
+    ⚠️
+</div>
+
+<div class="course-indicator" id="courseIndicator">
+    ➡️
+</div>
+<div class="navigation-direction" id="navigationDirection">
+    COURSE: AHEAD
+</div>
+
+        <div class="map-status">
+            <span>●</span> VESSEL POSITION
+        </div>
+    </div>
+</div>
+<!-- =====================================================
+     INCIDENT REPORT
+===================================================== -->
+
+<div class="report-card" id="reportCard">
+
+    <div class="report-header">
+        <span>📄</span>
+        <strong>INCIDENT REPORT</strong>
+    </div>
+
+    <div class="report-description">
+        Generate a downloadable PDF containing the sonar
+        detection, AI assessment, risk level, evidence,
+        recommended navigation action, and detected objects.
+    </div>
+
+    <button
+        class="report-button"
+        id="downloadReportButton"
+        disabled
+    >
+        📥 DOWNLOAD PDF REPORT
+    </button>
+
+    <button
+    class="report-button"
+    id="voiceAlertButton"
+    disabled
+>
+    🔊 PLAY VOICE ALERT
+</button>
+</div>
             <div class="model-info">
 
                 <div class="section-title">
@@ -1556,6 +1970,8 @@
 
 <script>
 const API_URL = "http://127.0.0.1:8000";
+const downloadReportButton = document.getElementById("downloadReportButton");
+const voiceAlertButton = document.getElementById("voiceAlertButton");
 
 const imageInput = document.getElementById("imageInput");
 const uploadBox = document.getElementById("uploadBox");
@@ -2685,7 +3101,103 @@ function updateNavigationRecommendation(
 ========================================================= */
 
 function displayResults(data) {
+window.latestDetectionData = data;
 
+const historyList = document.getElementById("historyList");
+
+if (historyList) {
+    const emptyMessage = historyList.querySelector(".history-empty");
+    if (emptyMessage) {
+        emptyMessage.remove();
+    }
+
+    const scanNumber =
+        historyList.querySelectorAll(".history-item").length + 1;
+
+    const targetCount = (data.detections || []).length;
+
+    const riskLevel =
+    targetCount === 0
+        ? "NO TARGET"
+        : (data.target_analysis?.risk_level || "UNKNOWN");
+
+    const historyItem = document.createElement("div");
+    historyItem.className = "history-item";
+
+    historyItem.innerHTML = `
+        <span class="history-scan">SCAN ${scanNumber}</span>
+        <span class="history-targets">
+            ${targetCount} target${targetCount === 1 ? "" : "s"} detected
+        </span>
+        <span class="history-risk">${riskLevel}</span>
+    `;
+
+    historyList.prepend(historyItem);
+}
+
+const totalScansElement = document.getElementById("totalScans");
+const totalTargetsElement = document.getElementById("totalTargets");
+const highRiskTargetsElement = document.getElementById("highRiskTargets");
+const averageConfidenceElement = document.getElementById("averageConfidence");
+
+const detectionsForStats = data.detections || [];
+
+const previousScans =
+    parseInt(totalScansElement?.textContent || "0", 10) || 0;
+
+const previousTargets =
+    parseInt(totalTargetsElement?.textContent || "0", 10) || 0;
+
+const previousHighRisk =
+    parseInt(highRiskTargetsElement?.textContent || "0", 10) || 0;
+
+const confidences = detectionsForStats
+    .map(detection => Number(detection.confidence))
+    .filter(confidence => !isNaN(confidence));
+
+const averageConfidence = confidences.length
+    ? Math.round(
+        (confidences.reduce((sum, value) => sum + value, 0) /
+            confidences.length) * 100
+      )
+    : 0;
+
+const highRiskCount = detectionsForStats.filter(detection => {
+    const risk = String(
+        detection.risk_level ||
+        detection.risk ||
+        detection.target_analysis?.risk_level ||
+        ""
+    ).toLowerCase();
+
+    return risk === "high" || risk === "critical";
+}).length;
+
+if (totalScansElement) {
+    totalScansElement.textContent = previousScans + 1;
+}
+
+if (totalTargetsElement) {
+    totalTargetsElement.textContent =
+        previousTargets + detectionsForStats.length;
+}
+
+if (highRiskTargetsElement) {
+    highRiskTargetsElement.textContent =
+        previousHighRisk + highRiskCount;
+}
+
+if (averageConfidenceElement) {
+    averageConfidenceElement.textContent =
+        `${averageConfidence}%`;
+}
+
+  if (downloadReportButton) {
+        downloadReportButton.disabled = false;
+    }
+    if (voiceAlertButton) {
+    voiceAlertButton.disabled = false;
+}
 const detections =
 
     Array.isArray(
@@ -2724,6 +3236,90 @@ window.latestDetections = detections;
                 );
             }
         );
+        const vesselMarker = document.getElementById("vesselMarker");
+
+if (vesselMarker) {
+    const mapTargets = (data.detections || []).length;
+
+    const mapX = Math.min(80, 50 + mapTargets * 5);
+    const mapY = Math.max(20, 50 - mapTargets * 3);
+
+    vesselMarker.style.left = `${mapX}%`;
+    vesselMarker.style.top = `${mapY}%`;
+}
+const targetMarker = document.getElementById("targetMarker");
+const courseIndicator = document.getElementById("courseIndicator");
+
+const primaryTarget =
+    Array.isArray(data.detections) && data.detections.length > 0
+        ? [...data.detections].sort(
+            (a, b) =>
+                Number(b.confidence || 0) -
+                Number(a.confidence || 0)
+          )[0]
+        : null;
+
+if (targetMarker && courseIndicator && primaryTarget) {
+    const box = primaryTarget.bbox;
+
+    if (box && data.image) {
+        const centerX =
+            (Number(box.x1) + Number(box.x2)) / 2;
+
+        const centerY =
+            (Number(box.y1) + Number(box.y2)) / 2;
+
+        const targetX =
+            Math.max(
+                10,
+                Math.min(
+                    90,
+                    (centerX / data.image.width) * 100
+                )
+            );
+
+        const targetY =
+            Math.max(
+                12,
+                Math.min(
+                    88,
+                    (centerY / data.image.height) * 100
+                )
+            );
+
+        targetMarker.style.left = `${targetX}%`;
+        targetMarker.style.top = `${targetY}%`;
+
+        const vesselX = 50;
+        const vesselY = 50;
+
+        const deltaX = targetX - vesselX;
+const navigationDirection =
+    document.getElementById("navigationDirection");
+
+if ((deltaX) < 10) {
+    courseIndicator.innerText = "⬆️";
+
+    if (navigationDirection) {
+        navigationDirection.innerText = "COURSE: AHEAD";
+    }
+
+} else if (deltaX < 0) {
+    courseIndicator.innerText = "↖️";
+
+    if (navigationDirection) {
+        navigationDirection.innerText = "COURSE: STEER RIGHT";
+    }
+
+} else {
+    courseIndicator.innerText = "↗️";
+
+    if (navigationDirection) {
+        navigationDirection.innerText = "COURSE: STEER LEFT";
+    }
+    }
+    }
+}
 
 
     /* =====================================================
@@ -2880,11 +3476,8 @@ if (previousScanDetections === null) {
             </span>
             — No detections found.
         `;
-
-
         return;
     }
-
 
     /* =====================================================
        DETECTION LIST
@@ -3318,7 +3911,47 @@ function escapeHtml(value) {
         );
 }
 
+if (voiceAlertButton) {
+    voiceAlertButton.addEventListener("click", () => {
+        if (!window.latestDetectionData) {
+            alert("Please run AI detection before playing the voice alert.");
+            return;
+        }
 
+        const analysis = window.latestDetectionData.target_analysis;
+
+        if (!analysis) {
+            alert("No target analysis is available.");
+            return;
+        }
+
+        const target = analysis.target || "unknown target";
+        const risk = analysis.risk_level || "unknown";
+        const action = analysis.recommended_action || "maintain safe navigation";
+        const confidence = analysis.confidence
+            ? Math.round(analysis.confidence * 100)
+            : null;
+
+        let message = `Marine sonar alert. `;
+        message += `Detected ${target}. `;
+        message += `Risk level is ${risk}. `;
+
+        if (confidence !== null) {
+            message += `Detection confidence is ${confidence} percent. `;
+        }
+
+        message += `Recommended navigation action: ${action}.`;
+
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        window.speechSynthesis.speak(utterance);
+    });
+}
 /* =========================================================
    START
 ========================================================= */
@@ -3551,10 +4184,96 @@ compareScansButton.addEventListener(
         }
 
     }
+    
+    
 );
+// ============================================================
+// DOWNLOAD PDF INCIDENT REPORT
+// ============================================================
 
+if (downloadReportButton) {
+
+    downloadReportButton.addEventListener("click", async () => {
+
+        if (!window.latestDetectionData) {
+            alert("Please run AI detection before generating a report.");
+            return;
+        }
+
+        try {
+
+            downloadReportButton.disabled = true;
+            downloadReportButton.textContent =
+                "⏳ GENERATING REPORT...";
+
+            const response = await fetch(
+                `${API_URL}/api/report`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(
+                        window.latestDetectionData
+                    )
+                }
+            );
+
+            if (!response.ok) {
+
+                const errorText =
+                    await response.text();
+
+                throw new Error(errorText);
+            }
+
+            const blob =
+                await response.blob();
+
+            const url =
+                window.URL.createObjectURL(blob);
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+
+            link.download =
+                "marine_sonar_incident_report.pdf";
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            link.remove();
+
+            window.URL.revokeObjectURL(url);
+
+        } catch (error) {
+
+            console.error(
+                "PDF report generation failed:",
+                error
+            );
+
+            alert(
+                "Unable to generate the PDF report. " +
+                "Please make sure the backend is running."
+            );
+
+        } finally {
+
+            downloadReportButton.disabled = false;
+
+            downloadReportButton.textContent =
+                "📥 DOWNLOAD PDF REPORT";
+        }
+
+    });
+
+}
 </script>
-
-
 </body>
 </html>

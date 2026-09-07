@@ -19,3 +19,4 @@ yolo_dataset_groupval_tiles_positive/
 gt_check/
 large_box_review.jpg
 train_label_check.jpg
+.DS_Store
