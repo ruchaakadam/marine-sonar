@@ -72,26 +72,11 @@ print(f"NMS IoU       : {NMS_IOU}")
 if not DRISHTI_MODEL_PATH.exists():
     raise FileNotFoundError(f"DRISHTI model not found: {DRISHTI_MODEL_PATH}")
 
-if not FALLBACK_MODEL_PATH.exists():
-    raise FileNotFoundError(f"Fallback model not found: {FALLBACK_MODEL_PATH}")
-
-if not CRABPOT_MODEL_PATH.exists():
-    raise FileNotFoundError(f"Crab-pot model not found: {CRABPOT_MODEL_PATH}")
-
-if not ROCK_MODEL_PATH.exists():
-    raise FileNotFoundError(f"Rock model not found: {ROCK_MODEL_PATH}")
-
+# Load only the primary DRISHTI model to stay within Render Free memory limits.
 drishti_model = YOLO(str(DRISHTI_MODEL_PATH))
-fallback_model = YOLO(str(FALLBACK_MODEL_PATH))
-crabpot_model = YOLO(str(CRABPOT_MODEL_PATH))
-rock_model = YOLO(str(ROCK_MODEL_PATH))
 
 print(f"DRISHTI classes: {drishti_model.names}")
-print(f"Fallback classes: {fallback_model.names}")
-print(f"Crab-pot classes: {crabpot_model.names}")
-print(f"Rock classes: {rock_model.names}")
-print("MODELS LOADED SUCCESSFULLY")
-print("=" * 70)
+print("PRIMARY MODEL LOADED SUCCESSFULLY")
 
 ALLOWED_TYPES = {
     "image/png",
@@ -158,7 +143,7 @@ def run_model(model, image):
         source=image,
         conf=CONFIDENCE,
         iou=NMS_IOU,
-        imgsz=1024,
+        imgsz=640,
         verbose=False,
     )
 
@@ -355,40 +340,7 @@ async def detect(file: UploadFile = File(...)):
         model_used = "fallback"
         print(f"DRISHTI inference failed: {e}")
 
-    # Specialized crab-pot model
-    try:
-        crabpot_detections = run_model(crabpot_model, image)
-        detections.extend(crabpot_detections)
-        if crabpot_detections:
-            model_used = "drishti+crabpot"
-    except Exception as e:
-        print(f"Crab-pot inference failed: {e}")
-
-    # Specialized rock model
-    try:
-        rock_detections = run_model(rock_model, image)
-        detections.extend(rock_detections)
-        if rock_detections:
-            if model_used == "drishti+crabpot":
-                model_used = "drishti+crabpot+rock"
-            elif model_used == "drishti":
-                model_used = "drishti+rock"
-            else:
-                model_used = "rock"
-    except Exception as e:
-        print(f"Rock inference failed: {e}")
-
-    # If none of the specialized models found anything, use the original fallback model.
-    if not detections:
-        try:
-            detections = run_model(fallback_model, image)
-            model_used = "best_fallback"
-        except Exception as e:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Model inference failed: {str(e)}",
-            )
-
+   
     target_analysis = analyze_target(detections)
 
     return {
