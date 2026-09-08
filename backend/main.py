@@ -143,7 +143,7 @@ def run_model(model, image):
         source=image,
         conf=CONFIDENCE,
         iou=NMS_IOU,
-        imgsz=640,
+        imgsz=520,
         verbose=False,
     )
 
