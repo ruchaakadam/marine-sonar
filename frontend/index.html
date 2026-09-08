@@ -28,6 +28,18 @@
         }
 
         body {
+       
+    background:
+        linear-gradient(
+            90deg,
+            rgba(2, 15, 28, 0.35),
+            rgba(2, 15, 28, 0.72)
+        ),
+        url("assets/underwater-bg.png") left bottom / cover no-repeat,
+        #020d18;
+
+    color: #eafaff;
+
             min-height: 100vh;
             font-family: Inter, Arial, Helvetica, sans-serif;
             color: var(--text);
@@ -201,43 +213,230 @@
             margin-top: 3px;
         }
 
+
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-left: auto;
+            margin-right: 30px;
+        }
+
+        .top-nav a {
+            min-width: 74px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #718fa0;
+            text-decoration: none;
+            font-size: 21px;
+            border-radius: 9px;
+            transition: all 0.2s ease;
+        }
+
+        .top-nav a span {
+            font-size: 10px;
+            letter-spacing: 0.4px;
+        }
+
+        .top-nav a:hover,
+        .top-nav a.active {
+            color: var(--cyan);
+            background: rgba(0,229,255,0.07);
+            text-shadow: 0 0 12px rgba(0,229,255,0.45);
+        }
+
+        .top-nav a.active {
+            box-shadow: inset 0 -2px 0 var(--cyan);
+        }
+
         /* MAIN */
 
         .container {
             width: min(1400px, 94%);
             margin: 30px auto 50px;
         }
-
         .dashboard {
-            display: grid;
-            grid-template-columns: 1.55fr 1fr;
-            gap: 20px;
-        }
+    grid-template-columns:
+        220px
+        minmax(560px, 1fr)
+        minmax(390px, 0.78fr);
+}
+        .dashboard {
+    display: grid;
+    grid-template-columns: 0.78fr 1.72fr 1.08fr;
+    gap: 18px;
+    align-items: start;
+}
 
         .panel {
+            position: relative;
+            overflow: hidden;
             background:
                 linear-gradient(
-                    145deg,
-                    rgba(5, 28, 45, 0.90),
-                    rgba(2, 13, 24, 0.94)
+                    135deg,
+                    rgba(3, 24, 41, 0.94),
+                    rgba(2, 12, 24, 0.90)
                 );
-
-            border: 1px solid var(--border);
+            border: 1px solid rgba(0, 210, 255, 0.24);
             border-radius: 16px;
-
             box-shadow:
-                0 15px 50px rgba(0,0,0,0.35),
-                inset 0 1px 0 rgba(255,255,255,0.03);
-
+                0 18px 55px rgba(0,0,0,0.38),
+                inset 0 1px 0 rgba(255,255,255,0.04);
             backdrop-filter: blur(14px);
         }
 
         .left-panel {
-            padding: 24px;
+            padding: 22px;
         }
 
         .right-panel {
-            padding: 24px;
+            padding: 18px;
+        }
+
+        /* LEFT MISSION INTRO */
+        .mission-intro {
+            position: relative;
+            min-height: 520px;
+            overflow: hidden;
+            padding: 28px 22px 22px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 210, 255, 0.24);
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(2, 16, 31, 0.62) 0%,
+                    rgba(2, 17, 31, 0.46) 42%,
+                    rgba(1, 11, 21, 0.22) 72%,
+                    rgba(1, 8, 16, 0.78) 100%
+                ),
+                url("assets/underwater-bg.png") center bottom / cover no-repeat;
+            box-shadow:
+                0 18px 55px rgba(0,0,0,0.40),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .mission-intro::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 18%, rgba(0,229,255,0.18), transparent 30%),
+                linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.24));
+            pointer-events: none;
+        }
+
+        .mission-intro-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .mission-kicker {
+            color: var(--cyan);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .mission-intro h2 {
+            font-size: clamp(34px, 3vw, 48px);
+            line-height: 0.98;
+            letter-spacing: -1px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        .mission-intro h2 span {
+            display: block;
+            background: linear-gradient(90deg, #ffffff 0%, #b69cff 42%, #00e5ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .mission-intro-copy {
+            color: #a9c5d3;
+            font-size: 13px;
+            line-height: 1.65;
+            max-width: 240px;
+            margin-bottom: 26px;
+        }
+
+        .mission-line {
+            width: 58px;
+            height: 2px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+            box-shadow: 0 0 12px rgba(0,229,255,0.5);
+        }
+
+        .mission-feature {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            color: #d9edf5;
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .mission-feature:last-child {
+            border-bottom: none;
+        }
+
+        .mission-feature-icon {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: rgba(0,229,255,0.08);
+            border: 1px solid rgba(0,229,255,0.22);
+            color: var(--cyan);
+            font-size: 18px;
+        }
+
+        .mission-feature:nth-child(2) .mission-feature-icon {
+            color: #00f5a0;
+            border-color: rgba(0,245,160,0.22);
+            background: rgba(0,245,160,0.07);
+        }
+
+        .mission-feature:nth-child(3) .mission-feature-icon {
+            color: #b69cff;
+            border-color: rgba(124,58,237,0.28);
+            background: rgba(124,58,237,0.08);
+        }
+
+        .mission-quote {
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            bottom: 18px;
+            z-index: 2;
+            padding: 13px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,210,255,0.24);
+            background: rgba(1,12,22,0.72);
+            backdrop-filter: blur(10px);
+            color: #cce7f1;
+            font-size: 11px;
+            line-height: 1.45;
+            font-style: italic;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+        }
+
+        .mission-quote span {
+            color: var(--cyan);
+            font-style: normal;
+            margin-right: 6px;
         }
 
         .section-title {
@@ -443,6 +642,48 @@
         #detectButton:disabled {
             opacity: .45;
             cursor: not-allowed;
+        }
+
+
+        /* QUICK ACTIONS */
+        .report-card {
+            position: relative;
+        }
+
+        .report-card::before {
+            content: "QUICK ACTIONS";
+            display: block;
+            margin-bottom: 12px;
+            color: #9f8bff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        #reports {
+            scroll-margin-top: 30px;
+        }
+
+        .report-button + .report-button {
+            margin-top: 8px;
+        }
+
+        .left-panel .section-title {
+            margin-bottom: 12px;
+        }
+
+        .left-panel .risk-reason {
+            color: #7f9eaf;
+            font-size: 11px;
+            margin: -3px 0 12px 35px;
+        }
+
+        .image-container {
+            min-height: 340px;
+        }
+
+        .empty-preview {
+            min-height: 340px;
         }
 
         /* RIGHT PANEL */
@@ -921,13 +1162,52 @@
 
         /* RESPONSIVE */
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1180px) {
+            .dashboard {
+                grid-template-columns: 0.78fr 1.45fr;
+            }
+
+            .mission-intro {
+                grid-row: span 2;
+                min-height: 760px;
+            }
+
+            .right-panel {
+                grid-column: 2;
+            }
+
+            .top-nav {
+                gap: 2px;
+                margin-right: 14px;
+            }
+
+            .top-nav a {
+                min-width: 60px;
+            }
+        }
+
+        @media (max-width: 900px) {
             .dashboard {
                 grid-template-columns: 1fr;
             }
 
+            .mission-intro,
+            .right-panel,
+            .left-panel {
+                grid-column: auto;
+                grid-row: auto;
+            }
+
+            .mission-intro {
+                min-height: 520px;
+            }
+
+            .top-nav {
+                display: none;
+            }
+
             .right-panel {
-                order: 2;
+                order: 3;
             }
         }
 
@@ -959,6 +1239,15 @@
             .left-panel,
             .right-panel {
                 padding: 15px;
+            }
+
+            .mission-intro {
+                min-height: 500px;
+                padding: 24px 18px;
+            }
+
+            .mission-intro h2 {
+                font-size: 38px;
             }
         }
                 .target-intelligence {
@@ -1407,7 +1696,806 @@
     z-index: 4;
     transition: left 0.4s ease, top 0.4s ease, transform 0.4s ease;
 }
-    </style>
+    
+
+        /* =========================================================
+           REFERENCE UI POLISH — CINEMATIC MARINE COMMAND CENTER
+        ========================================================= */
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(90deg, rgba(0, 10, 22, 0.10), rgba(0, 12, 28, 0.58)),
+                linear-gradient(180deg, rgba(0, 13, 27, 0.16), rgba(0, 8, 18, 0.62)),
+                url("assets/underwater-bg.png") center center / cover fixed no-repeat;
+            background-color: #01101e;
+        }
+
+        body::before {
+            background:
+                radial-gradient(circle at 9% 20%, rgba(0, 213, 255, 0.16), transparent 24%),
+                radial-gradient(circle at 72% 15%, rgba(47, 118, 255, 0.10), transparent 24%),
+                radial-gradient(circle at 92% 72%, rgba(126, 55, 235, 0.12), transparent 25%);
+        }
+
+        header {
+            height: 92px;
+            background: rgba(1, 13, 25, 0.76);
+            border-bottom: 1px solid rgba(0, 229, 255, 0.28);
+            backdrop-filter: blur(16px);
+        }
+
+        .header-inner {
+            width: calc(100% - 78px);
+            max-width: 1600px;
+        }
+
+        .brand { gap: 14px; }
+        .brand-icon {
+            width: 52px;
+            height: 52px;
+            font-size: 24px;
+            border-color: #00e5ff;
+            box-shadow: 0 0 25px rgba(0,229,255,.28), inset 0 0 18px rgba(0,229,255,.10);
+        }
+        .brand h1 { font-size: 25px; letter-spacing: .7px; }
+        .brand p { font-size: 11px; letter-spacing: 1.3px; margin-top: 4px; }
+
+        .top-nav {
+            margin-left: 0;
+            margin-right: 0;
+            gap: 3px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .top-nav a {
+            min-width: 82px;
+            padding: 7px 11px 8px;
+            color: #6f8fa4;
+            font-size: 22px;
+        }
+        .top-nav a span { font-size: 10px; }
+        .top-nav a:hover,
+        .top-nav a.active { background: rgba(0,229,255,.055); }
+
+        .system-status {
+            padding: 11px 18px;
+            border-radius: 9px;
+            background: rgba(0,245,160,.045);
+        }
+
+        .container {
+            width: calc(100% - 78px);
+            max-width: 1600px;
+            margin: 18px auto 48px;
+        }
+
+        .dashboard {
+            grid-template-columns: 280px minmax(0, 1.55fr) minmax(440px, 1.18fr);
+            gap: 12px;
+            align-items: start;
+        }
+
+        .mission-intro {
+            min-height: 690px;
+            padding: 48px 26px 22px;
+            border-radius: 13px;
+            border: 1px solid rgba(0, 205, 255, .18);
+            background:
+                linear-gradient(180deg, rgba(0,13,28,.24), rgba(0,12,25,.16) 45%, rgba(0,7,16,.56) 100%),
+                url("assets/underwater-bg.png") 23% bottom / cover no-repeat;
+            box-shadow: none;
+        }
+
+        .mission-intro::before {
+            background:
+                linear-gradient(180deg, rgba(0,14,29,.05), rgba(0,7,17,.12) 50%, rgba(0,5,13,.28)),
+                radial-gradient(circle at 40% 16%, rgba(0,229,255,.10), transparent 34%);
+        }
+
+        .mission-kicker { display: none; }
+        .mission-intro h2 {
+            font-size: 37px;
+            line-height: 1.05;
+            letter-spacing: -.7px;
+            margin-bottom: 20px;
+        }
+        .mission-intro h2 span { display:block; }
+        .mission-intro-copy {
+            max-width: 220px;
+            font-size: 13px;
+            line-height: 1.65;
+            margin-bottom: 22px;
+            color: #a7c3d2;
+        }
+        .mission-line { width: 46px; margin-bottom: 14px; }
+        .mission-feature { padding: 10px 0; font-size: 12px; }
+        .mission-feature-icon { width: 31px; height:31px; flex-basis:31px; }
+        .mission-quote {
+            left: 18px;
+            right: 18px;
+            bottom: 16px;
+            background: rgba(0,15,29,.58);
+            border-color: rgba(0, 214, 255, .30);
+        }
+
+        .panel {
+            border-radius: 13px;
+            background: rgba(1, 17, 31, .62);
+            border-color: rgba(0, 210, 255, .30);
+            box-shadow: 0 14px 40px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.035);
+            backdrop-filter: blur(10px);
+        }
+
+        .left-panel { padding: 18px 20px 22px; }
+        .right-panel { padding: 12px 10px 16px; }
+
+        .left-panel .section-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .section-number {
+            width: 34px;
+            height: 34px;
+            font-size: 16px;
+            background: rgba(0,229,255,.08);
+            border-color: rgba(0,229,255,.72);
+            box-shadow: 0 0 16px rgba(0,229,255,.10);
+        }
+        .left-panel .risk-reason { margin-left: 44px; }
+
+        .upload-box {
+            min-height: 236px;
+            border-radius: 12px;
+            border-color: rgba(0, 210, 255, .62);
+            background:
+                radial-gradient(circle at center, rgba(0, 205, 255, .08), transparent 65%),
+                rgba(1, 20, 35, .34);
+        }
+        .upload-icon { font-size: 52px; margin-bottom: 10px; }
+        .upload-box h3 { font-size: 16px; }
+        .choose-button {
+            padding: 11px 26px;
+            margin-top: 14px;
+            background: linear-gradient(90deg, #4d45ff, #00cfe8);
+            color: #f7fdff;
+            box-shadow: 0 0 22px rgba(0,180,255,.20);
+        }
+
+        .preview-section { margin-top: 10px; }
+        .image-container {
+            min-height: 272px;
+            height: 272px;
+            border-radius: 12px;
+            background: rgba(0, 8, 17, .54);
+            border-color: rgba(0, 210, 255, .48);
+        }
+        .empty-preview { min-height: 272px; color: #7192a6; }
+        #preview { max-height: 272px; }
+        #detectButton { margin-top: 12px; padding: 13px; }
+        #result { margin-top: 10px; }
+
+        .right-panel > .section-title:first-child { margin: 4px 10px 10px; }
+        .success-card {
+            margin: 0 10px 10px;
+            padding: 14px;
+            border-radius: 11px;
+            background: linear-gradient(90deg, rgba(0,245,160,.12), rgba(0,245,160,.025));
+        }
+        .success-icon { width: 46px; height:46px; }
+        .success-card h2 { font-size: 18px; }
+        .stats {
+            margin: 0 10px 10px;
+            gap: 8px;
+        }
+        .stat {
+            min-height: 62px;
+            padding: 9px 7px;
+            border-radius: 10px;
+            background: rgba(4, 27, 44, .65);
+            border-color: rgba(0, 210, 255, .18);
+        }
+        .stat-value { font-size: 19px; }
+        .stat-label { font-size: 9px; }
+
+        .right-panel > .section-title:nth-of-type(2) {
+            margin: 4px 10px 8px;
+            color: #b59cff;
+        }
+        .detection-list {
+            margin: 0 10px 10px;
+            padding: 0;
+            min-height: 80px;
+            border: 1px solid rgba(137, 84, 255, .24);
+            border-radius: 10px;
+            background: rgba(20, 14, 43, .18);
+        }
+
+        .navigation-card {
+            margin: 0 10px 10px;
+            padding: 14px;
+            border-radius: 11px;
+            background:
+                linear-gradient(135deg, rgba(255,193,7,.10), rgba(255,193,7,.018)),
+                rgba(10,20,29,.38);
+            border-color: rgba(255,193,7,.34);
+            min-height: 132px;
+        }
+        .navigation-header { margin-bottom: 9px; }
+        .recommended-action { font-size: 14px; }
+        .target-intelligence { margin-top: 10px; }
+
+        /* Quick actions immediately follow navigation, as in the reference. */
+        .report-card {
+            order: 0;
+            margin: 0 10px 10px;
+            padding: 13px 0 2px;
+            border: 1px solid rgba(0, 210, 255, .34);
+            border-radius: 11px;
+            background: rgba(0, 20, 36, .48);
+            overflow: hidden;
+        }
+        .report-card::before {
+            content: "⚡  QUICK ACTIONS";
+            margin: 0 14px 9px;
+            color: #00e5ff;
+            font-size: 13px;
+            letter-spacing: .8px;
+        }
+        .report-description { display: none; }
+        .report-button {
+            width: calc(50% - 17px);
+            margin: 0 5px 10px;
+            min-height: 43px;
+            padding: 10px 8px;
+            font-size: 11px;
+        }
+        .report-button:first-of-type { margin-left: 12px; }
+        .report-button + .report-button { margin-top: 0; }
+
+        /* Everything after Quick Actions continues below the hero viewport. */
+        .tracking-card,
+        .stats-card,
+        .history-card,
+        .map-card,
+        .model-info {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 1180px) {
+            .dashboard { grid-template-columns: 250px minmax(0, 1.35fr) minmax(360px, 1fr); }
+            .top-nav a { min-width: 68px; }
+        }
+
+        @media (max-width: 900px) {
+            .top-nav { position: static; transform:none; margin-left:auto; margin-right:12px; }
+            .dashboard { grid-template-columns: 1fr; }
+            .mission-intro { min-height: 460px; }
+        }
+
+
+
+        /* =========================================================
+           FINAL COMMAND-CENTER LAYOUT
+           Dense three-column layout matching the reference.
+        ========================================================= */
+        body::after {
+            display: none !important;
+        }
+
+        body {
+            background:
+                linear-gradient(90deg, rgba(0, 10, 22, .08), rgba(0, 12, 28, .52)),
+                linear-gradient(180deg, rgba(0, 13, 27, .10), rgba(0, 8, 18, .52)),
+                url("assets/underwater-bg.png") center center / cover fixed no-repeat;
+            background-color: #01101e;
+        }
+
+        body::before {
+            background:
+                radial-gradient(circle at 9% 22%, rgba(0, 213, 255, .08), transparent 22%),
+                radial-gradient(circle at 86% 18%, rgba(124, 58, 237, .055), transparent 20%);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1.55fr) minmax(440px, 1.18fr);
+            grid-template-rows: auto auto;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .mission-intro {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+            min-height: 100%;
+            height: 100%;
+        }
+
+        .left-panel {
+            grid-column: 2;
+            grid-row: 1;
+            min-width: 0;
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 1;
+            min-width: 0;
+            padding: 12px 10px 14px;
+        }
+
+        .center-lower {
+            grid-column: 2;
+            grid-row: 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .right-lower {
+            grid-column: 3;
+            grid-row: 2;
+            display: grid;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .center-lower .tracking-card,
+        .center-lower .history-card,
+        .right-lower .stats-card,
+        .right-lower .map-card,
+        .right-lower .model-info {
+            margin: 0;
+            min-width: 0;
+        }
+
+        .center-lower .tracking-card,
+        .center-lower .history-card {
+            height: 100%;
+        }
+
+        .center-lower .history-list {
+            max-height: 190px;
+        }
+
+        .right-lower .stats-card {
+            margin-top: 0;
+        }
+
+        .right-lower .map-card {
+            margin-top: 0;
+        }
+
+        .right-lower .mission-map {
+            height: 230px;
+        }
+
+        .right-lower .model-info {
+            margin-top: 0;
+        }
+
+        .right-panel .report-card {
+            margin-bottom: 0;
+        }
+
+        .right-panel {
+            background: rgba(1, 17, 31, .62);
+            border: 1px solid rgba(0, 210, 255, .30);
+            border-radius: 13px;
+            box-shadow: 0 14px 40px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.035);
+        }
+
+        @media (max-width: 1180px) {
+            .dashboard {
+                grid-template-columns: 250px minmax(0, 1.35fr) minmax(360px, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .mission-intro,
+            .left-panel,
+            .right-panel,
+            .center-lower,
+            .right-lower {
+                grid-column: auto;
+                grid-row: auto;
+            }
+
+            .mission-intro {
+                min-height: 460px;
+                height: auto;
+            }
+
+            .center-lower {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+
+/* =========================================================
+   COMPACT COMMAND-CENTER LAYOUT
+   Keeps every existing feature/functionality, removes the
+   large vertical gap, and makes the mission panel compact.
+========================================================= */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 220px minmax(560px, 1fr) minmax(390px, 0.78fr);
+    gap: 12px;
+    align-items: start;
+    min-width: 1180px;
+}
+
+.mission-intro {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 690px;
+    height: 100%;
+    padding: 32px 18px 18px;
+}
+
+.mission-intro h2 {
+    font-size: 34px;
+    line-height: 1.02;
+    margin-bottom: 16px;
+}
+
+.mission-intro-copy {
+    max-width: 205px;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+
+.mission-line {
+    width: 40px;
+    margin-bottom: 10px;
+}
+
+.mission-feature {
+    padding: 8px 0;
+    gap: 8px;
+    font-size: 11px;
+}
+
+.mission-feature-icon {
+    width: 29px;
+    height: 29px;
+    flex-basis: 29px;
+    font-size: 15px;
+}
+
+.mission-quote {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    padding: 10px 11px;
+    font-size: 10px;
+}
+
+/* The center and right wrappers make each column flow independently.
+   This is the key fix for the giant empty middle area. */
+.center-column,
+.right-column {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-self: start;
+}
+
+.center-column {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.right-column {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.center-column .left-panel,
+.right-column .right-panel {
+    width: 100%;
+    min-width: 0;
+}
+
+.center-lower {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+}
+
+.right-lower {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+}
+
+.center-lower .tracking-card,
+.center-lower .history-card,
+.right-lower .stats-card,
+.right-lower .map-card,
+.right-lower .model-info {
+    margin: 0;
+    min-width: 0;
+}
+
+.center-lower .tracking-card,
+.center-lower .history-card {
+    height: 100%;
+}
+
+.center-lower .history-list {
+    max-height: 170px;
+}
+
+.right-lower .stats-card,
+.right-lower .map-card,
+.right-lower .model-info {
+    margin-top: 0;
+}
+
+.right-lower .mission-map {
+    height: 220px;
+}
+
+/* Keep the main scanner dense like the reference. */
+.left-panel {
+    padding: 16px 18px 18px;
+}
+
+.left-panel .section-title {
+    margin-bottom: 8px;
+}
+
+.left-panel .risk-reason {
+    margin: -2px 0 8px 42px;
+    font-size: 10px;
+}
+
+.upload-box {
+    min-height: 190px;
+}
+
+.preview-section {
+    margin-top: 9px;
+}
+
+.image-container {
+    min-height: 245px;
+    height: 245px;
+}
+
+.empty-preview {
+    min-height: 245px;
+}
+
+#preview {
+    max-height: 245px;
+}
+
+#detectButton {
+    margin-top: 10px;
+    padding: 12px;
+}
+
+#result {
+    margin-top: 8px;
+    padding: 10px;
+    font-size: 11px;
+}
+
+/* Compact right column without removing information. */
+.right-panel {
+    padding: 10px 9px 12px;
+}
+
+.right-panel > .section-title:first-child {
+    margin: 3px 9px 8px;
+}
+
+.success-card {
+    margin: 0 9px 8px;
+    padding: 11px;
+}
+
+.success-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
+}
+
+.success-card h2 {
+    font-size: 16px;
+}
+
+.success-card p {
+    font-size: 10px;
+}
+
+.stats {
+    margin: 0 9px 8px;
+    gap: 7px;
+}
+
+.stat {
+    min-height: 55px;
+    padding: 7px 5px;
+}
+
+.stat-value {
+    font-size: 17px;
+}
+
+.stat-label {
+    font-size: 8px;
+}
+
+.right-panel > .section-title:nth-of-type(2) {
+    margin: 3px 9px 6px;
+}
+
+.detection-list {
+    margin: 0 9px 8px;
+    min-height: 65px;
+    max-height: 180px;
+}
+
+.detection {
+    padding: 9px;
+    margin-bottom: 6px;
+}
+
+.navigation-card {
+    margin: 0 9px 8px;
+    padding: 11px;
+    min-height: 0;
+}
+
+.navigation-header {
+    margin-bottom: 7px;
+}
+
+.recommended-action {
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.target-intelligence {
+    margin-top: 7px;
+}
+
+.intelligence-row {
+    margin-top: 6px;
+    gap: 8px;
+}
+
+.intelligence-row span {
+    font-size: 8px;
+}
+
+.intelligence-row strong {
+    font-size: 9px;
+}
+
+.report-card {
+    margin: 0 9px;
+    padding: 10px 0 1px;
+}
+
+.report-card::before {
+    margin: 0 11px 7px;
+    font-size: 11px;
+}
+
+.report-button {
+    min-height: 38px;
+    padding: 8px 5px;
+    font-size: 10px;
+}
+
+/* Remove the large decorative circle overlay. */
+body::after {
+    display: none !important;
+}
+
+/* Preserve the underwater background without extra visual clutter. */
+body::before {
+    background:
+        radial-gradient(circle at 8% 22%, rgba(0, 213, 255, .07), transparent 20%),
+        radial-gradient(circle at 88% 18%, rgba(124, 58, 237, .045), transparent 18%);
+}
+
+@media (max-width: 1250px) {
+    .dashboard {
+        grid-template-columns: 205px minmax(500px, 1fr) minmax(360px, .78fr);
+    }
+
+    .mission-intro h2 {
+        font-size: 31px;
+    }
+}
+
+@media (max-width: 950px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        min-width: 0;
+    }
+
+    .mission-intro,
+    .center-column,
+    .right-column {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .mission-intro {
+        min-height: 430px;
+        height: auto;
+    }
+
+    .center-lower {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .center-lower {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-intro {
+        min-height: 420px;
+    }
+}
+.mission-intro {
+    min-height: 520px;
+    height: 520px;
+    padding: 24px 18px 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 13, 28, 0.18),
+            rgba(0, 10, 20, 0.12) 48%,
+            rgba(0, 6, 14, 0.52) 100%
+        ),
+        url("assets/underwater-bg.png")
+        23% bottom / cover no-repeat;
+}
+
+.mission-intro h2 {
+    font-size: 34px;
+    margin-bottom: 14px;
+}
+
+.mission-intro-copy {
+    font-size: 11px;
+    line-height: 1.45;
+    margin-bottom: 15px;
+}
+
+.mission-feature {
+    padding: 7px 0;
+}
+
+</style>
 </head>
 
 <body>
@@ -1452,9 +2540,52 @@
 
     <div class="dashboard">
 
-        <!-- LEFT SIDE -->
 
-        <section class="panel left-panel">
+        <!-- MISSION INTRO -->
+        <aside class="mission-intro" id="missions">
+            <div class="mission-intro-content">
+                <div class="mission-kicker">UNDERWATER INTELLIGENCE SYSTEM</div>
+
+                <h2>
+                    DETECT
+                    <span>PROTECT</span>
+                    <span>EXPLORE</span>
+                </h2>
+
+                <p class="mission-intro-copy">
+                    AI-powered sonar analysis for safer navigation,
+                    smarter operations, and cleaner oceans.
+                </p>
+
+                <div class="mission-line"></div>
+
+                <div class="mission-feature">
+                    <div class="mission-feature-icon">◈</div>
+                    <div><strong>Prevent</strong><br>vessel damage</div>
+                </div>
+
+                <div class="mission-feature">
+                    <div class="mission-feature-icon">✦</div>
+                    <div><strong>Protect</strong><br>marine ecosystems</div>
+                </div>
+
+                <div class="mission-feature">
+                    <div class="mission-feature-icon">◎</div>
+                    <div><strong>Enable</strong><br>sustainable navigation</div>
+                </div>
+            </div>
+
+            <div class="mission-quote">
+                <span>≈</span>
+                “Clearer waters for a safer tomorrow.”
+            </div>
+        </aside>
+
+        <!-- SCANNER -->
+
+        <!-- LEFT SIDE -->
+<div class="center-column">
+        <section class="panel left-panel" id="scanner">
 
             <div class="section-title">
                 <div class="section-number">1</div>
@@ -1551,7 +2682,115 @@
 
         <!-- RIGHT SIDE -->
 
-        <aside class="panel right-panel">
+        <div class="center-lower">
+
+            <div class="tracking-card" id="trackingCard">
+
+    <div class="tracking-header">
+        <span>🔄</span>
+        <strong>MULTI-SCAN TARGET TRACKING</strong>
+    </div>
+
+    <div class="tracking-status" id="trackingStatus">
+        Scan 1:
+        <strong>Waiting for analysis</strong>
+    </div>
+
+    <button
+        class="tracking-button"
+        id="compareScansButton"
+        disabled
+    >
+        🔍 COMPARE WITH NEXT SCAN
+    </button>
+
+    <div class="tracking-summary">
+
+        <div class="tracking-stat">
+            <div
+                class="tracking-stat-value persistent-value"
+                id="persistentCount"
+            >
+                0
+            </div>
+
+            <div class="tracking-stat-label">
+                Persistent
+            </div>
+        </div>
+
+        <div class="tracking-stat">
+            <div
+                class="tracking-stat-value new-value"
+                id="newTargetCount"
+            >
+                0
+            </div>
+
+            <div class="tracking-stat-label">
+                New
+            </div>
+        </div>
+
+        <div class="tracking-stat">
+            <div
+                class="tracking-stat-value lost-value"
+                id="lostTargetCount"
+            >
+                0
+            </div>
+
+            <div class="tracking-stat-label">
+                Lost
+            </div>
+        </div>
+
+    </div>
+
+    <div
+        class="tracking-results"
+        id="trackingResults"
+    >
+        <div
+            style="
+                text-align:center;
+                padding:10px;
+                color:#557487;
+                font-size:10px;
+            "
+        >
+            Analyze two sonar scans to compare targets.
+        </div>
+    </div>
+
+    <div class="tracking-note">
+        Target persistence is determined using bounding-box overlap
+        between consecutive sonar scans. It does not independently
+        confirm physical vessel impact.
+    </div>
+
+</div>
+
+
+
+            <div class="history-card" id="historyCard">
+    <div class="history-header">
+        <span>📋</span>
+        <strong>MISSION LOG</strong>
+    </div>
+
+    <div class="history-list" id="historyList">
+        <div class="history-empty">
+            No scans recorded yet.
+        </div>
+    </div>
+</div>
+</div>
+</div><!-- /.center-column -->
+
+        <div class="right-column">
+
+        <aside class="panel right-panel" id="analytics">
 
             <div class="section-title">
                 📊 DETECTION RESULTS
@@ -1658,9 +2897,6 @@
                     No detections yet.
                 </div>
             </div>
-
-
-
             <!-- NAVIGATION RECOMMENDATION -->
 
             <div class="navigation-card" id="navigationCard">
@@ -1713,170 +2949,7 @@
 </div>
 
             </div>
-<!-- =====================================================
- MULTI-SCAN TARGET TRACKING
-===================================================== -->
-
-<div class="tracking-card" id="trackingCard">
-
-    <div class="tracking-header">
-        <span>🔄</span>
-        <strong>MULTI-SCAN TARGET TRACKING</strong>
-    </div>
-
-    <div class="tracking-status" id="trackingStatus">
-        Scan 1:
-        <strong>Waiting for analysis</strong>
-    </div>
-
-    <button
-        class="tracking-button"
-        id="compareScansButton"
-        disabled
-    >
-        🔍 COMPARE WITH NEXT SCAN
-    </button>
-
-    <div class="tracking-summary">
-
-        <div class="tracking-stat">
-            <div
-                class="tracking-stat-value persistent-value"
-                id="persistentCount"
-            >
-                0
-            </div>
-
-            <div class="tracking-stat-label">
-                Persistent
-            </div>
-        </div>
-
-        <div class="tracking-stat">
-            <div
-                class="tracking-stat-value new-value"
-                id="newTargetCount"
-            >
-                0
-            </div>
-
-            <div class="tracking-stat-label">
-                New
-            </div>
-        </div>
-
-        <div class="tracking-stat">
-            <div
-                class="tracking-stat-value lost-value"
-                id="lostTargetCount"
-            >
-                0
-            </div>
-
-            <div class="tracking-stat-label">
-                Lost
-            </div>
-        </div>
-
-    </div>
-
-    <div
-        class="tracking-results"
-        id="trackingResults"
-    >
-        <div
-            style="
-                text-align:center;
-                padding:10px;
-                color:#557487;
-                font-size:10px;
-            "
-        >
-            Analyze two sonar scans to compare targets.
-        </div>
-    </div>
-
-    <div class="tracking-note">
-        Target persistence is determined using bounding-box overlap
-        between consecutive sonar scans. It does not independently
-        confirm physical vessel impact.
-    </div>
-
-</div>
-
-<div class="stats-card" id="statsCard">
-    <div class="stats-header">
-        <span>📊</span>
-        <strong>MISSION STATISTICS</strong>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-item">
-            <span class="stat-value" id="totalScans">0</span>
-            <span class="stat-label">TOTAL SCANS</span>
-        </div>
-
-        <div class="stat-item">
-            <span class="stat-value" id="totalTargets">0</span>
-            <span class="stat-label">TARGETS</span>
-        </div>
-
-        <div class="stat-item">
-            <span class="stat-value" id="highRiskTargets">0</span>
-            <span class="stat-label">HIGH RISK</span>
-        </div>
-
-        <div class="stat-item">
-            <span class="stat-value" id="averageConfidence">0%</span>
-            <span class="stat-label">AVG CONFIDENCE</span>
-        </div>
-    </div>
-</div>
-<div class="history-card" id="historyCard">
-    <div class="history-header">
-        <span>📋</span>
-        <strong>MISSION LOG</strong>
-    </div>
-
-    <div class="history-list" id="historyList">
-        <div class="history-empty">
-            No scans recorded yet.
-        </div>
-    </div>
-</div>
-<div class="map-card" id="mapCard">
-    <div class="map-header">
-        <span>🗺️</span>
-        <strong>MISSION MAP</strong>
-    </div>
-
-    <div class="mission-map" id="missionMap">
-        <div class="map-grid"></div>
-
-        <div class="map-label map-north">N</div>
-        <div class="map-label map-south">S</div>
-        <div class="map-label map-east">E</div>
-        <div class="map-label map-west">W</div>
-
-        <div class="vessel-marker" id="vesselMarker">
-            🚢
-        </div>
-        <div class="target-marker" id="targetMarker">
-    ⚠️
-</div>
-
-<div class="course-indicator" id="courseIndicator">
-    ➡️
-</div>
-<div class="navigation-direction" id="navigationDirection">
-    COURSE: AHEAD
-</div>
-
-        <div class="map-status">
-            <span>●</span> VESSEL POSITION
-        </div>
-    </div>
-</div>
+            <footer>
 <!-- =====================================================
      INCIDENT REPORT
 ===================================================== -->
@@ -1910,6 +2983,83 @@
     🔊 PLAY VOICE ALERT
 </button>
 </div>
+
+<!-- =====================================================
+ MULTI-SCAN TARGET TRACKING
+===================================================== -->
+
+
+
+        </aside>
+
+
+        <div class="right-lower">
+
+            <div class="stats-card" id="statsCard">
+    <div class="stats-header">
+        <span>📊</span>
+        <strong>MISSION STATISTICS</strong>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-value" id="totalScans">0</span>
+            <span class="stat-label">TOTAL SCANS</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-value" id="totalTargets">0</span>
+            <span class="stat-label">TARGETS</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-value" id="highRiskTargets">0</span>
+            <span class="stat-label">HIGH RISK</span>
+        </div>
+
+        <div class="stat-item">
+            <span class="stat-value" id="averageConfidence">0%</span>
+            <span class="stat-label">AVG CONFIDENCE</span>
+        </div>
+    </div>
+</div>
+
+
+            <div class="map-card" id="mapCard">
+    <div class="map-header">
+        <span>🗺️</span>
+        <strong>MISSION MAP</strong>
+    </div>
+
+    <div class="mission-map" id="missionMap">
+        <div class="map-grid"></div>
+
+        <div class="map-label map-north">N</div>
+        <div class="map-label map-south">S</div>
+        <div class="map-label map-east">E</div>
+        <div class="map-label map-west">W</div>
+
+        <div class="vessel-marker" id="vesselMarker">
+            🚢
+        </div>
+        <div class="target-marker" id="targetMarker">
+    ⚠️
+</div>
+
+<div class="course-indicator" id="courseIndicator">
+    ➡️
+</div>
+<div class="navigation-direction" id="navigationDirection">
+    COURSE: AHEAD
+</div>
+
+        <div class="map-status">
+            <span>●</span> VESSEL POSITION
+        </div>
+    </div>
+</div>
+            
+
             <div class="model-info">
 
                 <div class="section-title">
@@ -1956,8 +3106,11 @@
 
         </aside>
 
-    </div>
+        </div><!-- /.right-lower -->
 
+        </div><!-- /.right-column -->
+
+    </div>
 
     <footer>
         ≋ &nbsp; <span>POWERED BY AI</span>
@@ -3102,6 +4255,7 @@ function updateNavigationRecommendation(
 
 function displayResults(data) {
 window.latestDetectionData = data;
+window.latestDetectionData.imageFile = selectedFile;
 
 const historyList = document.getElementById("historyList");
 
@@ -4108,29 +5262,27 @@ compareScansButton.addEventListener(
 
         try {
 
-            const response =
-                await fetch(
-                    `${API_URL}/api/track`,
-                    {
-                        method: "POST",
+            const reportFormData = new FormData();
 
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+reportFormData.append(
+    "data",
+    JSON.stringify(window.latestDetectionData)
+);
 
-                        body: JSON.stringify({
+if (window.latestDetectionData.imageFile) {
+    reportFormData.append(
+        "image",
+        window.latestDetectionData.imageFile
+    );
+}
 
-                            previous_detections:
-                                previousScanDetections,
-
-                            current_detections:
-                                currentDetections
-
-                        })
-                    }
-                );
-
-
+const response = await fetch(
+    `${API_URL}/api/report`,
+    {
+        method: "POST",
+        body: reportFormData
+    }
+);
             const trackingData =
                 await response.json();
 
@@ -4206,21 +5358,28 @@ if (downloadReportButton) {
             downloadReportButton.textContent =
                 "⏳ GENERATING REPORT...";
 
-            const response = await fetch(
-                `${API_URL}/api/report`,
-                {
-                    method: "POST",
+            const reportFormData = new FormData();
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+reportFormData.append(
+    "data",
+    JSON.stringify(window.latestDetectionData)
+);
 
-                    body: JSON.stringify(
-                        window.latestDetectionData
-                    )
-                }
-            );
+if (selectedFile) {
+    reportFormData.append(
+        "image",
+        selectedFile
+    );
+}
 
+const response = await fetch(
+    `${API_URL}/api/report`,
+    {
+        method: "POST",
+        body: reportFormData
+    }
+);
+                    
             if (!response.ok) {
 
                 const errorText =

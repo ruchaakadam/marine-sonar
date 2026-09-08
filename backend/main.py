@@ -1,9 +1,12 @@
 from io import BytesIO
 from pathlib import Path
 
+import json
+from fastapi import File, Form, UploadFile
+
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from PIL import Image
+from PIL import Image,ImageDraw
 from ultralytics import YOLO
 
 from datetime import datetime
@@ -20,6 +23,7 @@ from reportlab.platypus import (
     Spacer,
     Table,
     TableStyle,
+    Image as ReportLabImage,
 )
 
 app = FastAPI(
@@ -554,10 +558,14 @@ async def track_scans(data: dict):
 # ============================================================
 # PDF INCIDENT REPORT
 # ============================================================
-
 @app.post("/api/report")
-async def generate_report(data: dict):
+async def generate_report(
+    data: str = Form(...),
+    image: UploadFile = File(None),
+):
     try:
+        data = json.loads(data)
+
         buffer = BytesIO()
 
         doc = SimpleDocTemplate(
@@ -668,6 +676,105 @@ async def generate_report(data: dict):
         )
 
         story.append(scan_table)
+        # ----------------------------------------------------
+        # SONAR IMAGE WITH DETECTION ANNOTATIONS
+        # ----------------------------------------------------
+
+        if image:
+            image_bytes = await image.read()
+
+            image_stream = BytesIO(image_bytes)
+
+            pil_image = Image.open(image_stream).convert("RGB")
+
+            draw = ImageDraw.Draw(pil_image)
+
+            detections = data.get("detections", [])
+
+            for detection in detections:
+                box = detection.get("bbox", {})
+
+                x1 = int(float(box.get("x1", 0)))
+                y1 = int(float(box.get("y1", 0)))
+                x2 = int(float(box.get("x2", 0)))
+                y2 = int(float(box.get("y2", 0)))
+
+                class_name = str(
+                    detection.get(
+                        "class_name",
+                        "target"
+                    )
+                )
+
+                confidence = float(
+                    detection.get(
+                        "confidence",
+                        0
+                    )
+                )
+
+                label = (
+                    f"{class_name} "
+                    f"{round(confidence * 100)}%"
+                )
+
+                # Red detection bounding box
+                draw.rectangle(
+                    [x1, y1, x2, y2],
+                    outline="red",
+                    width=5,
+                )
+
+                # Label background
+                text_box = draw.textbbox(
+                    (x1, y1),
+                    label
+                )
+
+                draw.rectangle(
+                    [
+                        text_box[0],
+                        text_box[1],
+                        text_box[2] + 8,
+                        text_box[3] + 6,
+                    ],
+                    fill="red",
+                )
+
+                # Label text
+                draw.text(
+                    (x1 + 4, y1 + 2),
+                    label,
+                    fill="white",
+                )
+
+            annotated_stream = BytesIO()
+
+            pil_image.save(
+                annotated_stream,
+                format="JPEG",
+                quality=95,
+            )
+
+            annotated_stream.seek(0)
+
+            sonar_image = ReportLabImage(
+                annotated_stream,
+                width=500,
+                height=500,
+                hAlign="CENTER",
+            )
+
+            story.append(
+                Paragraph(
+                    "SONAR IMAGE EVIDENCE",
+                    heading_style,
+                )
+            )
+
+            story.append(sonar_image)
+
+            story.append(Spacer(1, 12))
 
         # ----------------------------------------------------
         # TARGET ANALYSIS
