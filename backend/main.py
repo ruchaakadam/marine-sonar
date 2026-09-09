@@ -2,6 +2,7 @@ from io import BytesIO
 from pathlib import Path
 
 import json
+import os
 from fastapi import File, Form, UploadFile
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -72,10 +73,31 @@ print(f"NMS IoU       : {NMS_IOU}")
 if not DRISHTI_MODEL_PATH.exists():
     raise FileNotFoundError(f"DRISHTI model not found: {DRISHTI_MODEL_PATH}")
 
-# Load only the primary DRISHTI model to stay within Render Free memory limits.
+# Primary model
 drishti_model = YOLO(str(DRISHTI_MODEL_PATH))
 
+# Specialized models can be disabled on low-memory deployments.
+# They remain enabled by default for local SIH testing.
+ENABLE_SPECIALIZED_MODELS = os.getenv("ENABLE_SPECIALIZED_MODELS", "true").lower() == "true"
+
+crabpot_model = None
+rock_model = None
+
+if ENABLE_SPECIALIZED_MODELS:
+    if CRABPOT_MODEL_PATH.exists():
+        crabpot_model = YOLO(str(CRABPOT_MODEL_PATH))
+        print(f"Crab-pot classes: {crabpot_model.names}")
+    else:
+        print(f"Crab-pot model not found: {CRABPOT_MODEL_PATH}")
+
+    if ROCK_MODEL_PATH.exists():
+        rock_model = YOLO(str(ROCK_MODEL_PATH))
+        print(f"Rock classes: {rock_model.names}")
+    else:
+        print(f"Rock model not found: {ROCK_MODEL_PATH}")
+
 print(f"DRISHTI classes: {drishti_model.names}")
+print(f"Specialized models enabled: {ENABLE_SPECIALIZED_MODELS}")
 print("PRIMARY MODEL LOADED SUCCESSFULLY")
 
 ALLOWED_TYPES = {
@@ -94,6 +116,7 @@ def root():
         "models_loaded": True,
         "primary_model": "drishti",
         "specialized_models": ["crabpot_trained", "rock_trained"],
+        "specialized_models_enabled": ENABLE_SPECIALIZED_MODELS,
         "fallback_model": "best",
         "docs": "/docs",
     }
@@ -108,6 +131,7 @@ def health():
         "primary_model": str(DRISHTI_MODEL_PATH),
         "crabpot_model": str(CRABPOT_MODEL_PATH),
         "rock_model": str(ROCK_MODEL_PATH),
+        "specialized_models_enabled": ENABLE_SPECIALIZED_MODELS,
         "fallback_model": str(FALLBACK_MODEL_PATH),
         "confidence": CONFIDENCE,
         "nms_iou": NMS_IOU,
@@ -143,7 +167,7 @@ def run_model(model, image):
         source=image,
         conf=CONFIDENCE,
         iou=NMS_IOU,
-        imgsz=320,
+        imgsz=720,
         verbose=False,
     )
 
@@ -252,6 +276,20 @@ def analyze_target(detections):
                 "independently verified."
             ),
         },
+        "rock": {
+            "label": "Rock / Boulder",
+            "risk": "MEDIUM",
+            "action": (
+                "Maintain safe clearance, reduce speed if necessary, and "
+                "perform a secondary sonar scan to verify the feature and "
+                "its position."
+            ),
+            "assessment": (
+                "The sonar model identifies a feature consistent with a "
+                "rock or boulder. The image alone does not establish its "
+                "exact size, depth, or navigational clearance."
+            ),
+        },
     }
 
     profile = target_profiles.get(
@@ -337,10 +375,37 @@ async def detect(file: UploadFile = File(...)):
         model_used = "drishti"
     except Exception as e:
         detections = []
-        model_used = "fallback"
+        model_used = "drishti_failed"
         print(f"DRISHTI inference failed: {e}")
 
-   
+    # Specialized crab-pot model. Avoid duplicates if DRISHTI already
+    # identified a crab pot.
+    if crabpot_model is not None:
+        has_crab_pot = any(
+            d.get("class_name") == "crab_pot"
+            for d in detections
+        )
+
+        if not has_crab_pot:
+            try:
+                crabpot_detections = run_model(crabpot_model, image)
+                detections.extend(crabpot_detections)
+                if crabpot_detections:
+                    model_used = f"{model_used}+crabpot"
+            except Exception as e:
+                print(f"Crab-pot inference failed: {e}")
+
+    # Specialized rock model. DRISHTI does not contain a rock class,
+    # so run the rock detector independently when available.
+    if rock_model is not None:
+        try:
+            rock_detections = run_model(rock_model, image)
+            detections.extend(rock_detections)
+            if rock_detections:
+                model_used = f"{model_used}+rock"
+        except Exception as e:
+            print(f"Rock inference failed: {e}")
+
     target_analysis = analyze_target(detections)
 
     return {

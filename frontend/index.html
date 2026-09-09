@@ -35,7 +35,7 @@
             rgba(2, 15, 28, 0.35),
             rgba(2, 15, 28, 0.72)
         ),
-        url("assets/underwater-bg.png") left bottom / cover no-repeat,
+        url("assets/underwater_bg.png") left bottom / cover no-repeat,
         #020d18;
 
     color: #eafaff;
@@ -313,7 +313,7 @@
                     rgba(1, 11, 21, 0.22) 72%,
                     rgba(1, 8, 16, 0.78) 100%
                 ),
-                url("assets/underwater-bg.png") center bottom / cover no-repeat;
+                url("assets/underwater_bg.png") center bottom / cover no-repeat;
             box-shadow:
                 0 18px 55px rgba(0,0,0,0.40),
                 inset 0 1px 0 rgba(255,255,255,0.05);
@@ -1708,7 +1708,7 @@
             background:
                 linear-gradient(90deg, rgba(0, 10, 22, 0.10), rgba(0, 12, 28, 0.58)),
                 linear-gradient(180deg, rgba(0, 13, 27, 0.16), rgba(0, 8, 18, 0.62)),
-                url("assets/underwater-bg.png") center center / cover fixed no-repeat;
+                url("assets/underwater_bg.png") center center / cover fixed no-repeat;
             background-color: #01101e;
         }
 
@@ -1785,7 +1785,7 @@
             border: 1px solid rgba(0, 205, 255, .18);
             background:
                 linear-gradient(180deg, rgba(0,13,28,.24), rgba(0,12,25,.16) 45%, rgba(0,7,16,.56) 100%),
-                url("assets/underwater-bg.png") 23% bottom / cover no-repeat;
+                url("assets/underwater_bg.png") 23% bottom / cover no-repeat;
             box-shadow: none;
         }
 
@@ -1990,7 +1990,7 @@
             background:
                 linear-gradient(90deg, rgba(0, 10, 22, .08), rgba(0, 12, 28, .52)),
                 linear-gradient(180deg, rgba(0, 13, 27, .10), rgba(0, 8, 18, .52)),
-                url("assets/underwater-bg.png") center center / cover fixed no-repeat;
+                url("assets/underwater_bg.png") center center / cover fixed no-repeat;
             background-color: #01101e;
         }
 
@@ -2476,7 +2476,7 @@ body::before {
             rgba(0, 10, 20, 0.12) 48%,
             rgba(0, 6, 14, 0.52) 100%
         ),
-        url("assets/underwater-bg.png")
+        url("assets/underwater_bg.png")
         23% bottom / cover no-repeat;
 }
 
@@ -2493,6 +2493,193 @@ body::before {
 
 .mission-feature {
     padding: 7px 0;
+}
+
+
+
+/* =========================================================
+   FINAL SCREEN-FIT + SONAR ALIGNMENT FIX
+   Keeps the existing visual design/background unchanged.
+========================================================= */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.container {
+    width: min(calc(100% - 32px), 1600px);
+    max-width: 1600px;
+    margin: 14px auto 30px;
+}
+
+.dashboard {
+    width: 100%;
+    min-width: 0 !important;
+    grid-template-columns:
+        minmax(185px, 0.70fr)
+        minmax(0, 1.62fr)
+        minmax(310px, 1.05fr);
+    gap: 12px;
+    align-items: start;
+}
+
+.mission-intro,
+.center-column,
+.right-column,
+.left-panel,
+.right-panel,
+.center-lower,
+.right-lower {
+    min-width: 0 !important;
+    max-width: 100%;
+}
+
+.mission-intro {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 0.64 / 1;
+}
+
+.left-panel,
+.right-panel {
+    width: 100%;
+}
+
+.center-lower {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+/* The sonar viewport is a fixed responsive box. The JS places the
+   actual image and canvas inside it at their exact rendered size. */
+.image-container {
+    position: relative;
+    width: 100%;
+    height: clamp(250px, 31vw, 390px);
+    min-height: 250px;
+    display: block;
+    overflow: hidden;
+}
+
+#preview {
+    display: none;
+    position: absolute;
+    margin: 0;
+    max-width: none;
+    max-height: none;
+    object-fit: fill;
+}
+
+#overlay {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.empty-preview {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+/* Avoid text or cards forcing a column wider than the viewport. */
+.section-title,
+.detection,
+.intelligence-row,
+.history-item,
+.report-card,
+.navigation-card,
+.stats-card,
+.map-card,
+.model-info,
+.tracking-card,
+.history-card {
+    min-width: 0;
+}
+
+.intelligence-row strong,
+.recommended-action,
+.risk-reason,
+.detection strong,
+.history-targets {
+    overflow-wrap: anywhere;
+}
+
+/* Laptop / smaller desktop */
+@media (max-width: 1250px) {
+    .container {
+        width: min(calc(100% - 24px), 1180px);
+    }
+
+    .dashboard {
+        grid-template-columns:
+            minmax(175px, 0.62fr)
+            minmax(0, 1.55fr)
+            minmax(285px, 0.95fr);
+        gap: 10px;
+    }
+
+    .mission-intro {
+        padding: 28px 16px 16px;
+    }
+
+    .mission-intro h2 {
+        font-size: clamp(27px, 3vw, 34px);
+    }
+
+    .image-container {
+        height: clamp(235px, 30vw, 330px);
+        min-height: 235px;
+    }
+}
+
+/* Tablet / narrow laptop: stack instead of squeezing or clipping. */
+@media (max-width: 980px) {
+    .container {
+        width: min(calc(100% - 24px), 760px);
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .mission-intro,
+    .center-column,
+    .right-column,
+    .center-lower,
+    .right-lower {
+        grid-column: auto !important;
+        grid-row: auto !important;
+    }
+
+    .mission-intro {
+        aspect-ratio: auto;
+        min-height: 400px;
+    }
+
+    .image-container {
+        height: min(55vw, 390px);
+        min-height: 240px;
+    }
+}
+
+@media (max-width: 700px) {
+    .container {
+        width: calc(100% - 16px);
+        margin-top: 10px;
+    }
+
+    .center-lower {
+        grid-template-columns: 1fr;
+    }
+
+    .image-container {
+        height: min(68vw, 340px);
+        min-height: 220px;
+    }
 }
 
 </style>
@@ -3122,7 +3309,7 @@ body::before {
 </main>
 
 <script>
-const API_URL = "https://marine-sonar.onrender.com";
+const API_URL = "http://127.0.0.1:8000";
 const downloadReportButton = document.getElementById("downloadReportButton");
 const voiceAlertButton = document.getElementById("voiceAlertButton");
 
@@ -3473,52 +3660,66 @@ selectedFile = file;
 
 function resizeCanvas() {
 
-    if (
-        !preview.naturalWidth ||
-        !preview.naturalHeight
-    ) {
+    if (!preview.naturalWidth || !preview.naturalHeight) {
         return;
     }
 
+    const container = preview.parentElement;
+    if (!container) {
+        return;
+    }
 
-    const rect =
-        preview.getBoundingClientRect();
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    const imageRatio = preview.naturalWidth / preview.naturalHeight;
 
+    if (!containerWidth || !containerHeight || !imageRatio) {
+        return;
+    }
 
-    overlay.width =
-        Math.max(
-            1,
-            Math.round(rect.width)
-        );
+    /*
+       The image uses object-fit: contain. Calculate the EXACT rendered
+       image rectangle inside the preview container, including the
+       letterbox space on either side/top-bottom.
+    */
+    let renderedWidth = containerWidth;
+    let renderedHeight = renderedWidth / imageRatio;
 
-    overlay.height =
-        Math.max(
-            1,
-            Math.round(rect.height)
-        );
+    if (renderedHeight > containerHeight) {
+        renderedHeight = containerHeight;
+        renderedWidth = renderedHeight * imageRatio;
+    }
 
+    const left = (containerWidth - renderedWidth) / 2;
+    const top = (containerHeight - renderedHeight) / 2;
 
-    overlay.style.width =
-        `${rect.width}px`;
+    preview.style.position = "absolute";
+    preview.style.width = `${renderedWidth}px`;
+    preview.style.height = `${renderedHeight}px`;
+    preview.style.left = `${left}px`;
+    preview.style.top = `${top}px`;
+    preview.style.maxWidth = "none";
+    preview.style.maxHeight = "none";
+    preview.style.objectFit = "fill";
 
-    overlay.style.height =
-        `${rect.height}px`;
+    overlay.width = Math.max(1, Math.round(renderedWidth));
+    overlay.height = Math.max(1, Math.round(renderedHeight));
+    overlay.style.position = "absolute";
+    overlay.style.width = `${renderedWidth}px`;
+    overlay.style.height = `${renderedHeight}px`;
+    overlay.style.left = `${left}px`;
+    overlay.style.top = `${top}px`;
 }
 
 
-window.addEventListener(
-    "resize",
-    function() {
-
-        if (
-            preview.naturalWidth &&
-            preview.naturalHeight
-        ) {
-
-            resizeCanvas();
+window.addEventListener("resize", function() {
+    if (preview.naturalWidth && preview.naturalHeight) {
+        resizeCanvas();
+        if (Array.isArray(window.latestDetections)) {
+            drawDetections(window.latestDetections);
         }
     }
-);
+});
 
 
 /* =========================================================
@@ -3548,209 +3749,85 @@ function drawDetections(detections) {
 
     clearBoxes();
 
-
-    if (
-        !detections ||
-        detections.length === 0
-    ) {
+    if (!detections || detections.length === 0) {
         return;
     }
 
-
-    if (
-        !preview.naturalWidth ||
-        !preview.naturalHeight
-    ) {
+    if (!preview.naturalWidth || !preview.naturalHeight) {
         return;
     }
 
-
-    const ctx =
-        overlay.getContext("2d");
-
-
-    const rect =
-        preview.getBoundingClientRect();
-
+    const ctx = overlay.getContext("2d");
 
     /*
-        IMPORTANT
-
-        Backend returns:
-
-        x1
-        y1
-        x2
-        y2
-
-        These values are in ORIGINAL
-        IMAGE PIXEL coordinates.
+       overlay is deliberately positioned on the EXACT rendered image
+       rectangle by resizeCanvas(). Therefore these coordinates map
+       directly from original sonar pixels to canvas pixels.
     */
+    const scaleX = overlay.width / preview.naturalWidth;
+    const scaleY = overlay.height / preview.naturalHeight;
 
+    detections.forEach(function(detection) {
 
-    const scaleX =
-        rect.width /
-        preview.naturalWidth;
-
-
-    const scaleY =
-        rect.height /
-        preview.naturalHeight;
-
-
-    detections.forEach(
-        function(detection) {
-
-            const box =
-                detection &&
-                detection.bbox;
-
-
-            if (!box) {
-                return;
-            }
-
-
-            const x1 =
-                Number(box.x1);
-
-            const y1 =
-                Number(box.y1);
-
-            const x2 =
-                Number(box.x2);
-
-            const y2 =
-                Number(box.y2);
-
-
-            if (
-                !Number.isFinite(x1) ||
-                !Number.isFinite(y1) ||
-                !Number.isFinite(x2) ||
-                !Number.isFinite(y2)
-            ) {
-                return;
-            }
-
-
-            const x =
-                x1 * scaleX;
-
-
-            const y =
-                y1 * scaleY;
-
-
-            const width =
-                Math.max(
-                    1,
-                    (x2 - x1) * scaleX
-                );
-
-
-            const height =
-                Math.max(
-                    1,
-                    (y2 - y1) * scaleY
-                );
-
-
-            const confidence =
-                Math.round(
-                    Number(
-                        detection.confidence || 0
-                    ) * 100
-                );
-
-
-            const className =
-                detection.class_name ||
-                detection.class ||
-                "target";
-
-
-            ctx.save();
-
-
-            /* BOX */
-
-            ctx.strokeStyle =
-                "#ff4057";
-
-            ctx.lineWidth =
-                3;
-
-            ctx.shadowColor =
-                "#ff4057";
-
-            ctx.shadowBlur =
-                8;
-
-
-            ctx.strokeRect(
-                x,
-                y,
-                width,
-                height
-            );
-
-
-            ctx.shadowBlur =
-                0;
-
-
-            /* LABEL */
-
-            const label =
-                `${className} ${confidence}%`;
-
-
-            ctx.font =
-                "bold 13px Arial";
-
-
-            const textWidth =
-                ctx.measureText(label).width;
-
-
-            const labelHeight =
-                23;
-
-
-            const labelY =
-                Math.max(
-                    0,
-                    y - labelHeight
-                );
-
-
-            ctx.fillStyle =
-                "#ff4057";
-
-
-            ctx.fillRect(
-                x,
-                labelY,
-                textWidth + 14,
-                labelHeight
-            );
-
-
-            ctx.fillStyle =
-                "#ffffff";
-
-
-            ctx.fillText(
-                label,
-                x + 7,
-                labelY + 16
-            );
-
-
-            ctx.restore();
+        const box = detection && detection.bbox;
+        if (!box) {
+            return;
         }
-    );
+
+        const x1 = Number(box.x1);
+        const y1 = Number(box.y1);
+        const x2 = Number(box.x2);
+        const y2 = Number(box.y2);
+
+        if (
+            !Number.isFinite(x1) ||
+            !Number.isFinite(y1) ||
+            !Number.isFinite(x2) ||
+            !Number.isFinite(y2)
+        ) {
+            return;
+        }
+
+        const x = x1 * scaleX;
+        const y = y1 * scaleY;
+        const width = Math.max(1, (x2 - x1) * scaleX);
+        const height = Math.max(1, (y2 - y1) * scaleY);
+
+        const confidence = Math.round(
+            Number(detection.confidence || 0) * 100
+        );
+
+        const className =
+            detection.class_name ||
+            detection.class ||
+            "target";
+
+        ctx.save();
+
+        ctx.strokeStyle = "#ff4057";
+        ctx.lineWidth = 3;
+        ctx.shadowColor = "#ff4057";
+        ctx.shadowBlur = 8;
+
+        ctx.strokeRect(x, y, width, height);
+
+        ctx.shadowBlur = 0;
+
+        const label = `${className} ${confidence}%`;
+        ctx.font = "bold 13px Arial";
+
+        const textWidth = ctx.measureText(label).width;
+        const labelHeight = 23;
+        const labelY = Math.max(0, y - labelHeight);
+
+        ctx.fillStyle = "#ff4057";
+        ctx.fillRect(x, labelY, textWidth + 14, labelHeight);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(label, x + 7, labelY + 16);
+
+        ctx.restore();
+    });
 }
 
 
