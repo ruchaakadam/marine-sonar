@@ -582,7 +582,9 @@ async def generate_report(
     image: UploadFile = File(None),
 ):
     try:
-        data = json.loads(data)
+        if isinstance(data, str):
+            data = data.lstrip("\ufeff").strip()
+            data = json.loads(data)
 
         buffer = BytesIO()
 

@@ -5422,19 +5422,11 @@ if (selectedFile) {
     );
 }
 
-const currentDetections = window.latestDetections;
-
 const response = await fetch(
-    `${API_URL}/api/track`,
+    `${API_URL}/api/report`,
     {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            previous_detections: previousScanDetections,
-            current_detections: currentDetections
-        })
+        body: reportFormData
     }
 );
                     
