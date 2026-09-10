@@ -855,7 +855,7 @@
 ========================================================= */
 
 .tracking-card {
-    margin-top: 20px;
+    margin-top: 12px;
     padding: 17px;
     border-radius: 12px;
 
@@ -971,9 +971,10 @@
 .lost-value {
     color: #ffd166;
 }
-
 .tracking-results {
     margin-top: 12px;
+    max-height: 220px;
+    overflow-y: auto;
 }
 
 .tracking-result {
@@ -2139,8 +2140,8 @@
 .mission-intro {
     grid-column: 1;
     grid-row: 1;
-    min-height: 690px;
-    height: 100%;
+    min-height: 0;
+height: 560px;
     padding: 32px 18px 18px;
 }
 
@@ -2189,7 +2190,7 @@
 .right-column {
     min-width: 0;
     display: flex;
-    flex-direction: column;
+    display: contents;
     gap: 12px;
     align-self: start;
 }
@@ -2216,6 +2217,7 @@
     gap: 12px;
     width: 100%;
     min-width: 0;
+    min-height: 560px;
 }
 
 .right-lower {
@@ -2237,8 +2239,7 @@
 
 .center-lower .tracking-card,
 .center-lower .history-card {
-    height: 100%;
-}
+    height: fit-content;
 
 .center-lower .history-list {
     max-height: 170px;
@@ -5327,52 +5328,24 @@ compareScansButton.addEventListener(
         }
 
 
-        const currentDetections =
-            window.latestDetections;
-
-
-        compareScansButton.disabled = true;
-
-        compareScansButton.innerText =
-            "⏳ COMPARING SCANS...";
-
-
-        try {
-
-            const reportFormData = new FormData();
-
-reportFormData.append(
-    "data",
-    JSON.stringify(window.latestDetectionData)
-);
-
-if (window.latestDetectionData.imageFile) {
-    reportFormData.append(
-        "image",
-        window.latestDetectionData.imageFile
-    );
-}
+       try{
+const currentDetections = window.latestDetections;
 
 const response = await fetch(
-    `${API_URL}/api/report`,
+    `${API_URL}/api/track`,
     {
         method: "POST",
-        body: reportFormData
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            previous_detections: previousScanDetections,
+            current_detections: currentDetections
+        })
     }
 );
-            const trackingData =
-                await response.json();
 
-
-            if (!response.ok) {
-
-                throw new Error(
-                    trackingData.detail ||
-                    "Tracking request failed."
-                );
-
-            }
-
+const trackingData = await response.json();
 
             displayTrackingResults(
                 trackingData
@@ -5449,11 +5422,19 @@ if (selectedFile) {
     );
 }
 
+const currentDetections = window.latestDetections;
+
 const response = await fetch(
-    `${API_URL}/api/report`,
+    `${API_URL}/api/track`,
     {
         method: "POST",
-        body: reportFormData
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            previous_detections: previousScanDetections,
+            current_detections: currentDetections
+        })
     }
 );
                     
