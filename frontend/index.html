@@ -5340,7 +5340,87 @@ function unlockVoiceAlerts() {
 
     voiceAlertUnlocked = true;
 }
+// =========================================================
+// DISPLAY TRACKING RESULTS
+// =========================================================
 
+function displayTrackingResults(data) {
+
+    persistentCount.innerText =
+        data.persistent_targets || 0;
+
+    newTargetCount.innerText =
+        data.new_targets || 0;
+
+    lostTargetCount.innerText =
+        data.no_longer_detected || 0;
+
+    if (!data.matches || data.matches.length === 0) {
+
+        trackingResults.innerHTML = `
+            <div class="tracking-result">
+                <strong>NO TARGET CHANGES</strong>
+                <small>
+                    No target transitions were identified
+                    between the two scans.
+                </small>
+            </div>
+        `;
+
+        return;
+    }
+
+    trackingResults.innerHTML =
+        data.matches.map(function(match) {
+
+            let icon = "🔎";
+
+            if (match.status === "PERSISTENT TARGET") {
+                icon = "🟢";
+            }
+
+            if (match.status === "NEW TARGET") {
+                icon = "🆕";
+            }
+
+            if (match.status === "NO LONGER DETECTED") {
+                icon = "⚪";
+            }
+
+            const confidence =
+                Math.round(
+                    Number(
+                        match.confidence ??
+                        match.accuracy ??
+                        0
+                    ) * 100
+                );
+
+            const iou =
+                Number(match.iou || 0).toFixed(2);
+
+            return `
+                <div class="tracking-result">
+
+                    <strong>
+                        ${icon}
+                        ${escapeHtml(match.status)}
+                    </strong>
+
+                    <small>
+                        Confidence: ${confidence}%
+                        ${
+                            match.status === "PERSISTENT TARGET"
+                                ? ` • IoU: ${iou}`
+                                : ""
+                        }
+                    </small>
+
+                </div>
+            `;
+
+        }).join("");
+}
 // =========================================================
 // COMPARE TWO SONAR SCANS
 // =========================================================
