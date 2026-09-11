@@ -78,7 +78,7 @@ drishti_model = YOLO(str(DRISHTI_MODEL_PATH))
 
 # Specialized models can be disabled on low-memory deployments.
 # They remain enabled by default for local SIH testing.
-ENABLE_SPECIALIZED_MODELS = os.getenv("ENABLE_SPECIALIZED_MODELS", "true").lower() == "true"
+ENABLE_SPECIALIZED_MODELS = os.getenv("ENABLE_SPECIALIZED_MODELS", "false").lower() == "true"
 
 crabpot_model = None
 rock_model = None
