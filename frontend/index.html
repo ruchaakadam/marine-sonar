@@ -2716,6 +2716,25 @@ and (max-width: 1200px) {
         min-height: 0;
     }
 }
+.report-button.alert-active {
+    animation: voiceAlertPulse 1s infinite;
+    border-color: #ff4057;
+    box-shadow: 0 0 18px rgba(255, 64, 87, 0.55);
+}
+
+@keyframes voiceAlertPulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.65;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
 </style>
 <body>
 <header>
@@ -4422,12 +4441,11 @@ function triggerAutomaticVoiceAlert(data) {
         "maintain safe navigation";
 
     const message =
-        `Warning. High risk target detected. ` +
-        `Detected ${target}. ` +
-        `Detection accuracy is ${accuracy} percent. ` +
-        `Risk level is ${risk}. ` +
-        `Recommended navigation action: ${action}.`;
-
+    `Navigation warning. ` +
+    `High risk target detected. ` +
+    `${target} detected with ${accuracy} percent accuracy. ` +
+    `Risk level: ${risk}. ` +
+    `Recommended navigation action: ${action}.`;
     console.log("🔊 AUTOMATIC VOICE ALERT:", message);
 
     if (!("speechSynthesis" in window)) {
@@ -4448,12 +4466,25 @@ function triggerAutomaticVoiceAlert(data) {
     utterance.volume = 1.0;
 
     utterance.onstart = () => {
-        console.log("🔊 VOICE ALERT STARTED");
-    };
 
-    utterance.onend = () => {
-        console.log("🔊 VOICE ALERT FINISHED");
-    };
+    console.log("🔊 VOICE ALERT STARTED");
+
+    if (voiceAlertButton) {
+        voiceAlertButton.disabled = false;
+        voiceAlertButton.innerText = "🔊 ALERT ACTIVE";
+        voiceAlertButton.classList.add("alert-active");
+    }
+};
+
+  utterance.onend = () => {
+
+    console.log("🔊 VOICE ALERT FINISHED");
+
+    if (voiceAlertButton) {
+        voiceAlertButton.innerText = "🔊 PLAY VOICE ALERT";
+        voiceAlertButton.classList.remove("alert-active");
+    }
+};
 
     utterance.onerror = (event) => {
         console.error(
