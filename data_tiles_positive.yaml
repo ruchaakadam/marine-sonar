@@ -1,0 +1,7 @@
+path: D:/sih/marine-sonar/yolo_dataset_groupval_tiles_positive
+
+train: train/images
+val: val/images
+
+names:
+  0: crab-pots
