@@ -4357,7 +4357,113 @@ function updateNavigationRecommendation(
     }
 }
 
+/* =========================================================
+   AUTOMATIC HIGH-RISK VOICE ALERT
+========================================================= */
 
+let lastAutoVoiceAlert = "";
+
+function triggerAutomaticVoiceAlert(data) {
+
+    if (!data || !data.target_analysis) {
+        console.log("🔊 No target analysis available.");
+        return;
+    }
+
+    const analysis = data.target_analysis;
+
+    const confidence = Number(
+        analysis.accuracy || 0
+    );
+
+    const risk = String(
+        analysis.risk_level || ""
+    ).toUpperCase();
+
+    console.log("🔊 Automatic alert check:", {
+        confidence,
+        risk,
+        target: analysis.target
+    });
+
+    // Only alert for >= 75% accuracy
+    if (confidence < 0.75) {
+        console.log("🔊 Alert skipped: accuracy below 75%");
+        return;
+    }
+
+    // Only HIGH or CRITICAL risk
+    if (risk !== "HIGH" && risk !== "CRITICAL") {
+        console.log("🔊 Alert skipped: risk is not HIGH/CRITICAL");
+        return;
+    }
+
+    const target =
+        analysis.target ||
+        analysis.target_class ||
+        "unknown target";
+
+    const alertKey =
+        `${target}-${Math.round(confidence * 100)}-${risk}`;
+
+    // Prevent the same alert from repeating
+    if (alertKey === lastAutoVoiceAlert) {
+        console.log("🔊 Duplicate alert skipped.");
+        return;
+    }
+
+    lastAutoVoiceAlert = alertKey;
+
+    const accuracy =
+        Math.round(confidence * 100);
+
+    const action =
+        analysis.recommended_action ||
+        "maintain safe navigation";
+
+    const message =
+        `Warning. High risk target detected. ` +
+        `Detected ${target}. ` +
+        `Detection accuracy is ${accuracy} percent. ` +
+        `Risk level is ${risk}. ` +
+        `Recommended navigation action: ${action}.`;
+
+    console.log("🔊 AUTOMATIC VOICE ALERT:", message);
+
+    if (!("speechSynthesis" in window)) {
+        console.error(
+            "Speech synthesis is not supported."
+        );
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
+
+    const utterance =
+        new SpeechSynthesisUtterance(message);
+
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+
+    utterance.onstart = () => {
+        console.log("🔊 VOICE ALERT STARTED");
+    };
+
+    utterance.onend = () => {
+        console.log("🔊 VOICE ALERT FINISHED");
+    };
+
+    utterance.onerror = (event) => {
+        console.error(
+            "🔊 VOICE ALERT ERROR:",
+            event.error
+        );
+    };
+
+    window.speechSynthesis.speak(utterance);
+}
 /* =========================================================
    DISPLAY RESULTS
 ========================================================= */
@@ -4682,6 +4788,7 @@ if ((deltaX) < 10) {
     sortedDetections,
     data && data.target_analysis
 );
+triggerAutomaticVoiceAlert(data);
 // =========================================================
 // SAVE DETECTION FOR MULTI-SCAN TRACKING
 // =========================================================
@@ -4855,6 +4962,7 @@ if (previousScanDetections === null) {
 detectButton.addEventListener(
     "click",
     async function() {
+        unlockVoiceAlerts();
 
         if (!selectedFile) {
 
@@ -5173,7 +5281,6 @@ function escapeHtml(value) {
             "&#039;"
         );
 }
-
 /* =========================================================
    VOICE ALERT INITIALIZATION
 ========================================================= */
@@ -5181,156 +5288,23 @@ function escapeHtml(value) {
 let voiceAlertUnlocked = false;
 
 function unlockVoiceAlerts() {
+
     if (!("speechSynthesis" in window)) {
         console.warn("Speech synthesis is not supported.");
         return;
     }
 
-    // Resume speech engine if browser suspended it
     window.speechSynthesis.resume();
 
-    // A tiny silent utterance establishes user interaction
-    const unlock = new SpeechSynthesisUtterance("");
+    const unlock =
+        new SpeechSynthesisUtterance("");
+
     unlock.volume = 0;
 
     window.speechSynthesis.speak(unlock);
 
     voiceAlertUnlocked = true;
 }
-if (voiceAlertButton) {
-    voiceAlertButton.addEventListener("click", () => {
-        if (!window.latestDetectionData) {
-            alert("Please run sonar analysis before playing the voice alert.");
-            return;
-        }
-
-        const analysis = window.latestDetectionData.target_analysis;
-
-        if (!analysis) {
-            alert("No target analysis is available.");
-            return;
-        }
-
-        const target = analysis.target || "unknown target";
-        const risk = analysis.risk_level || "unknown";
-        const action = analysis.recommended_action || "maintain safe navigation";
-        const accuracy = analysis.accuracy
-            ? Math.round(analysis.accuracy * 100)
-            : null;
-
-        let message = `Marine sonar alert. `;
-        message += `Detected ${target}. `;
-        message += `Risk level is ${risk}. `;
-
-        if (accuracy !== null) {
-            message += `Detection accuracy is ${accuracy} percent. `;
-        }
-
-        message += `Recommended navigation action: ${action}.`;
-
-        window.speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(message);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-
-        window.speechSynthesis.speak(utterance);
-    });
-}
-/* =========================================================
-   START
-========================================================= */
-
-checkAPI();
-
-
-// =========================================================
-// DISPLAY TRACKING RESULTS
-// =========================================================
-
-function displayTrackingResults(data) {
-
-    persistentCount.innerText =
-        data.persistent_targets || 0;
-
-    newTargetCount.innerText =
-        data.new_targets || 0;
-
-    lostTargetCount.innerText =
-        data.no_longer_detected || 0;
-
-
-    if (!data.matches || data.matches.length === 0) {
-
-        trackingResults.innerHTML = `
-            <div class="tracking-result">
-
-                <strong>NO TARGET CHANGES</strong>
-
-                <small>
-                    No target transitions were identified
-                    between the two scans.
-                </small>
-
-            </div>
-        `;
-
-        return;
-    }
-
-
-    trackingResults.innerHTML =
-        data.matches.map(function(match) {
-
-            let icon = "🔎";
-
-            if (match.status === "PERSISTENT TARGET") {
-                icon = "🟢";
-            }
-
-            if (match.status === "NEW TARGET") {
-                icon = "🆕";
-            }
-
-            if (match.status === "NO LONGER DETECTED") {
-                icon = "⚪";
-            }
-
-
-            const accuracy =
-                Math.round(
-                    Number(match.accuracy || 0) * 100
-                );
-
-            const iou =
-                Number(match.iou || 0).toFixed(2);
-
-
-            return `
-                <div class="tracking-result">
-
-                    <strong>
-                        ${icon}
-                        ${escapeHtml(match.status)}
-                    </strong>
-
-                    <small>
-                        Accuracy: ${accuracy}%
-                        ${
-                            match.status === "PERSISTENT TARGET"
-                                ? ` • IoU: ${iou}`
-                                : ""
-                        }
-                    </small>
-
-                </div>
-            `;
-
-        }).join("");
-}
-
-
 
 // =========================================================
 // COMPARE TWO SONAR SCANS
