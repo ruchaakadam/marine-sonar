@@ -3,6 +3,7 @@ from pathlib import Path
 
 import json
 import os
+import gc
 from fastapi import File, Form, UploadFile
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -163,11 +164,21 @@ def normalize_detection(model, box):
 
 
 def run_model(model, image):
+    """
+    Run one sonar image through the selected YOLO model.
+
+    The original image is kept unchanged. YOLO handles temporary
+    preprocessing internally. These settings reduce peak RAM usage
+    on low-memory deployments such as Render Free.
+    """
     results = model.predict(
         source=image,
         conf=ACCURACY,
         iou=NMS_IOU,
-        imgsz=720,
+        imgsz=640,
+        device="cpu",
+        batch=1,
+        max_det=20,
         verbose=False,
     )
 
@@ -181,6 +192,9 @@ def run_model(model, image):
 
         for box in boxes:
             detections.append(normalize_detection(model, box))
+
+    del results
+    gc.collect()
 
     return detections
 
