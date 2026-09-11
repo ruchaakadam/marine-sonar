@@ -3360,7 +3360,11 @@ and (max-width: 1200px) {
 </main>
 
 <script>
-const API_URL = "http://127.0.0.1:8000";
+const API_URL =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://127.0.0.1:8000"
+        : "https://marine-sonar.onrender.com";
 const downloadReportButton = document.getElementById("downloadReportButton");
 const voiceAlertButton = document.getElementById("voiceAlertButton");
 
