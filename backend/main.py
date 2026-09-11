@@ -59,7 +59,7 @@ DRISHTI_MODEL_PATH = BASE_DIR / "models" / "drishti.pt"
 CRABPOT_MODEL_PATH = BASE_DIR / "models" / "crabpot_trained.pt"
 ROCK_MODEL_PATH = BASE_DIR / "models" / "rock_trained.pt"
 
-CONFIDENCE = 0.20
+ACCURACY = 0.20
 NMS_IOU = 0.40
 
 print("=" * 70)
@@ -67,7 +67,7 @@ print("LOADING MARINE SONAR MODELS")
 print("=" * 70)
 print(f"DRISHTI model : {DRISHTI_MODEL_PATH}")
 print(f"Fallback model: {FALLBACK_MODEL_PATH}")
-print(f"Confidence    : {CONFIDENCE}")
+print(f"Accuracy     : {ACCURACY}")
 print(f"NMS IoU       : {NMS_IOU}")
 
 if not DRISHTI_MODEL_PATH.exists():
@@ -133,14 +133,14 @@ def health():
         "rock_model": str(ROCK_MODEL_PATH),
         "specialized_models_enabled": ENABLE_SPECIALIZED_MODELS,
         "fallback_model": str(FALLBACK_MODEL_PATH),
-        "confidence": CONFIDENCE,
+        "accuracy": ACCURACY,
         "nms_iou": NMS_IOU,
     }
 
 
 def normalize_detection(model, box):
     xyxy = box.xyxy[0].tolist()
-    confidence = float(box.conf[0])
+    accuracy = float(box.conf[0])
     class_id = int(box.cls[0])
     class_name = str(model.names[class_id]).lower().replace("-", "_").replace(" ", "_")
 
@@ -152,7 +152,7 @@ def normalize_detection(model, box):
     return {
         "class_id": class_id,
         "class_name": class_name,
-        "confidence": round(confidence, 4),
+        "accuracy": round(accuracy, 4),
         "bbox": {
             "x1": round(xyxy[0], 2),
             "y1": round(xyxy[1], 2),
@@ -165,7 +165,7 @@ def normalize_detection(model, box):
 def run_model(model, image):
     results = model.predict(
         source=image,
-        conf=CONFIDENCE,
+        conf=ACCURACY,
         iou=NMS_IOU,
         imgsz=720,
         verbose=False,
@@ -191,7 +191,7 @@ def analyze_target(detections):
             "status": "NO TARGET",
             "target": None,
             "possible_impact_object": None,
-            "confidence": 0,
+            "accuracy": 0,
             "impact_assessment": "NO CONFIDENT TARGET IDENTIFIED",
             "assessment": (
                 "No confident target was identified in the sonar image. "
@@ -204,9 +204,9 @@ def analyze_target(detections):
             ),
         }
 
-    best_detection = max(detections, key=lambda d: d["confidence"])
+    best_detection = max(detections, key=lambda d: d["accuracy"])
 
-    confidence = best_detection["confidence"]
+    accuracy = best_detection["accuracy"]
     class_name = best_detection["class_name"]
     bbox = best_detection["bbox"]
 
@@ -308,16 +308,16 @@ def analyze_target(detections):
         },
     )
 
-    if confidence >= 0.75:
-        status = "HIGH CONFIDENCE"
-    elif confidence >= 0.50:
-        status = "MEDIUM CONFIDENCE"
+    if accuracy >= 0.75:
+        status = "HIGH ACCURACY"
+    elif accuracy >= 0.50:
+        status = "MEDIUM ACCURACY"
     else:
-        status = "LOW CONFIDENCE"
+        status = "LOW ACCURACY"
 
     evidence = [
         f"Detected target type: {profile['label']}.",
-        f"AI detection confidence: {round(confidence * 100)}%.",
+        f"Sonar analysis accuracy: {round(accuracy * 100)}%.",
         f"Risk classification: {profile['risk']}.",
         (
             f"Detected image region: x1={bbox['x1']}, y1={bbox['y1']}, "
@@ -332,7 +332,7 @@ def analyze_target(detections):
         "target_class": class_name,
         "risk_level": profile["risk"],
         "possible_impact_object": profile["label"],
-        "confidence": confidence,
+        "accuracy": accuracy,
         "impact_assessment": (
             f"POSSIBLE {profile['label'].upper()} — "
             f"{profile['risk']} RISK"
@@ -412,7 +412,7 @@ async def detect(file: UploadFile = File(...)):
         "success": True,
         "filename": file.filename,
         "model": model_used,
-        "confidence_threshold": CONFIDENCE,
+        "accuracy_threshold": ACCURACY,
         "nms_iou_threshold": NMS_IOU,
         "image": {
             "width": image.width,
@@ -483,7 +483,7 @@ def track_targets(previous_detections, current_detections):
                 "status": "PERSISTENT TARGET",
                 "previous_target": best_previous_index + 1,
                 "current_target": current_index + 1,
-                "confidence": current["confidence"],
+                "accuracy": current["accuracy"],
                 "iou": round(best_iou, 4),
                 "possible_object": current.get(
                     "class_name", "unknown"
@@ -499,7 +499,7 @@ def track_targets(previous_detections, current_detections):
                 "status": "NEW TARGET",
                 "previous_target": None,
                 "current_target": current_index + 1,
-                "confidence": current["confidence"],
+                "accuracy": current["accuracy"],
                 "iou": 0,
                 "possible_object": current.get(
                     "class_name", "unknown"
@@ -512,7 +512,7 @@ def track_targets(previous_detections, current_detections):
                 "status": "NO LONGER DETECTED",
                 "previous_target": previous_index + 1,
                 "current_target": None,
-                "confidence": previous["confidence"],
+                "accuracy": previous["accuracy"],
                 "iou": 0,
                 "possible_object": previous.get(
                     "class_name", "unknown"
@@ -633,7 +633,7 @@ async def generate_report(
 
         story.append(
             Paragraph(
-                "MARINE SONAR AI<br/>INCIDENT & TARGET ANALYSIS REPORT",
+                "MARINE SONAR<br/>INCIDENT & TARGET ANALYSIS REPORT",
                 title_style,
             )
         )
@@ -665,8 +665,8 @@ async def generate_report(
             ],
             ["Model Used", str(data.get("model", "Unknown"))],
             [
-                "Confidence Threshold",
-                str(data.get("confidence_threshold", "—")),
+                "Accuracy Threshold",
+                str(data.get("accuracy_threshold", "—")),
             ],
             [
                 "NMS IoU Threshold",
@@ -726,19 +726,19 @@ async def generate_report(
                     )
                 )
 
-                confidence = float(
+                accuracy = float(
                     detection.get(
-                        "confidence",
+                        "accuracy",
                         0
                     )
                 )
 
                 label = (
                     f"{class_name} "
-                    f"{round(confidence * 100)}%"
+                    f"{round(accuracy * 100)}%"
                 )
 
-                # Red detection bounding box
+                # Mark detected target coordinates
                 draw.rectangle(
                     [x1, y1, x2, y2],
                     outline="red",
@@ -819,8 +819,8 @@ async def generate_report(
                 ),
             ],
             [
-                "Confidence",
-                f"{round(float(analysis.get('confidence', 0)) * 100)}%",
+                "Accuracy",
+                f"{round(float(analysis.get('accuracy', 0)) * 100)}%",
             ],
             [
                 "Risk Level",
@@ -859,11 +859,11 @@ async def generate_report(
         story.append(target_table)
 
         # ----------------------------------------------------
-        # AI ASSESSMENT
+        # SONAR ASSESSMENT
         # ----------------------------------------------------
 
         story.append(
-            Paragraph("3. AI ASSESSMENT", heading_style)
+            Paragraph("3. SONAR ASSESSMENT", heading_style)
         )
 
         assessment = analysis.get(
@@ -933,7 +933,7 @@ async def generate_report(
 
         if detections:
             detection_data = [
-                ["#", "Object", "Confidence", "Bounding Box"]
+                ["#", "Object", "Accuracy", "Coordinates"]
             ]
 
             for index, detection in enumerate(
@@ -947,6 +947,7 @@ async def generate_report(
                     f"{bbox.get('y1', '—')}) → "
                     f"({bbox.get('x2', '—')}, "
                     f"{bbox.get('y2', '—')})"
+                    
                 )
 
                 detection_data.append(
@@ -958,7 +959,7 @@ async def generate_report(
                                 "unknown"
                             )
                         ),
-                        f"{round(float(detection.get('confidence', 0)) * 100)}%",
+                        f"{round(float(detection.get('accuracy', 0)) * 100)}%",
                         bbox_text,
                     ]
                 )
@@ -1036,7 +1037,7 @@ async def generate_report(
 
         story.append(
             Paragraph(
-                "<b>IMPORTANT:</b> Sonar imagery and AI detection "
+                "<b>IMPORTANT:</b> Sonar imagery and sonar analysis "
                 "provide decision-support information. A detected "
                 "target does not independently prove physical vessel "
                 "impact. Secondary verification is recommended.",
