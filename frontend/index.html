@@ -5174,6 +5174,29 @@ function escapeHtml(value) {
         );
 }
 
+/* =========================================================
+   VOICE ALERT INITIALIZATION
+========================================================= */
+
+let voiceAlertUnlocked = false;
+
+function unlockVoiceAlerts() {
+    if (!("speechSynthesis" in window)) {
+        console.warn("Speech synthesis is not supported.");
+        return;
+    }
+
+    // Resume speech engine if browser suspended it
+    window.speechSynthesis.resume();
+
+    // A tiny silent utterance establishes user interaction
+    const unlock = new SpeechSynthesisUtterance("");
+    unlock.volume = 0;
+
+    window.speechSynthesis.speak(unlock);
+
+    voiceAlertUnlocked = true;
+}
 if (voiceAlertButton) {
     voiceAlertButton.addEventListener("click", () => {
         if (!window.latestDetectionData) {
