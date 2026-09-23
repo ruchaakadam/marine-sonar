@@ -1,314 +1,287 @@
-🌊 Marine Sonar AI
+# 🌊 Marine Sonar AI
 
-AI-powered underwater sonar analysis for detecting and monitoring marine objects and hazards.
+### AI-Powered Underwater Target Detection & Mission Analysis
+ 
+Marine Sonar AI is a computer-vision web application for analyzing underwater sonar imagery. It uses a YOLO-based detection model to identify marine targets and presents the results through an interactive mission dashboard.
 
-Marine Sonar AI is a computer-vision based web application designed to assist underwater exploration by analyzing sonar imagery with YOLO-based object detection. The system provides a mission-style interface for scanning sonar images, viewing detections, tracking objects across multiple scans, and generating mission reports.
+![Marine Sonar AI Dashboard](screenshots/marine-sonar-dashboard.png)
 
-🎯 Project Overview
+---
 
-Underwater sonar imagery can be difficult and time-consuming to inspect manually. Marine Sonar AI aims to support this process by automatically identifying objects of interest in sonar scans and presenting the results through an intuitive dashboard.
+## 🚀 What the Project Does
 
-The project combines:
+**Upload sonar image → Run AI detection → Analyze targets → Track scans → Generate report**
 
-🤖 YOLO-based AI object detection
+The application is designed to make underwater sonar analysis easier to inspect, interpret, and document.
 
-🌊 Marine sonar image analysis
+### Core capabilities
 
-📍 Detection visualization and mission statistics
+- 🔎 **Sonar image detection** using YOLO
+- 🎯 **Marine target classification** and confidence reporting
+- 🔄 **Multi-scan target tracking**
+- 📊 **Mission statistics and detection history**
+- 🗺️ **Mission-map visualization**
+- 📄 **PDF incident / mission reports**
+- ⚡ **FastAPI backend + web frontend**
+- 🌊 Mission-oriented underwater UI
 
-🔄 Multi-scan object tracking
+---
 
-📄 Automated PDF mission reports
+## 🧠 AI Detection
 
-⚡ FastAPI backend
+The current primary model is:
 
-🖥️ Interactive web frontend
-
-✨ Key Features
-
-🔎 AI Sonar Detection
-
-Upload a sonar image and run AI inference to identify detected marine objects.
-
-🎯 Detection Results
-
-The interface displays detected objects together with confidence information and visual results.
-
-🔄 Multi-Scan Tracking
-
-The application supports tracking detections across multiple sonar scans to help monitor objects over time.
-
-📊 Mission Dashboard
-
-Mission statistics and scan information are presented in a dedicated dashboard.
-
-🗺️ Mission Visualization
-
-The interface provides a marine-themed visualization area for mission and detection information.
-
-📄 PDF Mission Reports
-
-Detection and mission information can be exported into a PDF report.
-
-🩵 Marine Mission Interface
-
-The frontend uses a dark underwater-inspired interface designed specifically for sonar-analysis workflows.
-
-🖼️ Screenshot
-
-
-
-🧠 AI / Detection
-
-The backend uses Ultralytics YOLO for image detection.
-
-The primary model used by the current backend is:
-
+```text
 models/drishti.pt
+```
 
-The application is designed around marine-sonar detection profiles such as:
+The DRISHTI model used by the application contains these classes:
 
-Crab pot
+| ID | Target |
+|---:|---|
+| 0 | Crab pot |
+| 1 | Submarine pipeline |
+| 2 | Shipwreck |
+| 3 | Ghost net |
+| 4 | Mine cylinder |
 
-Submarine pipeline
+The model output is used by the backend to produce detection results for the frontend.
 
-Shipwreck
+---
 
-Ghost net
+## 🖥️ Application Flow
 
-Mine cylinder
+```text
+┌──────────────────┐
+│  Sonar Image     │
+│     Upload       │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│   FastAPI API    │
+│  /api/detect     │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│   YOLO Model     │
+│  DRISHTI Model   │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│ Detection Results│
+│ + Confidence     │
+└────────┬─────────┘
+         │
+     ┌───┴──────────────┐
+     ▼                  ▼
+┌─────────────┐   ┌──────────────┐
+│ Multi-Scan  │   │ PDF Mission  │
+│ Tracking    │   │ Report       │
+└─────────────┘   └──────────────┘
+```
 
-Unknown objects
+---
 
-The exact classes available depend on the trained model used for inference.
+## ✨ Main Dashboard
 
-🏗️ System Architecture
+The dashboard is organized around a marine mission workflow:
 
-                    ┌──────────────────────┐
-                    │   Sonar Image Input  │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │   Web Frontend       │
-                    │ HTML / CSS / JS      │
-                    └──────────┬───────────┘
-                               │ HTTP API
-                               ▼
-                    ┌──────────────────────┐
-                    │   FastAPI Backend    │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │    YOLO Inference    │
-                    │   Marine Sonar AI    │
-                    └──────────┬───────────┘
-                               │
-                    ┌──────────┴───────────┐
-                    ▼                      ▼
-             Detection Results       Mission Report
-             & Tracking Data              PDF
+**1. Upload Sonar Image**  
+Select or drag-and-drop a sonar image.
 
-🛠️ Tech Stack
+**2. Sonar Preview & Detection**  
+Preview the scan and run AI inference.
 
-Frontend
+**3. Detection Results**  
+View detected targets, image information, confidence, and IoU-related results.
 
-HTML5
+**4. Navigation Recommendation**  
+Display analysis information for the current scan.
 
-CSS3
+**5. Multi-Scan Tracking**  
+Compare successive scans and identify persistent, new, or lost targets.
 
-JavaScript
+**6. Mission Statistics & Map**  
+Review scan statistics and mission visualization.
 
-Static HTTP server
+**7. Incident Report**  
+Generate a downloadable PDF report.
 
-Backend
+---
 
-Python
+## 🛠️ Tech Stack
 
-FastAPI
+| Layer | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Python, FastAPI |
+| Server | Uvicorn |
+| AI | Ultralytics YOLO |
+| Computer Vision | OpenCV, NumPy |
+| ML Runtime | PyTorch |
+| Reporting | ReportLab |
+| Version Control | Git + GitHub |
 
-Uvicorn
+---
 
-Pydantic
+## 📁 Project Structure
 
-AI / Computer Vision
-
-Ultralytics YOLO
-
-PyTorch
-
-OpenCV
-
-NumPy
-
-Reporting
-
-ReportLab
-
-Version Control / Deployment
-
-Git
-
-GitHub
-
-Render / cloud deployment configuration
-
-📁 Project Structure
-
+```text
 marine-sonar/
+│
 ├── backend/
-│   ├── main.py
-│   └── ...
+│   └── main.py
+│
 ├── frontend/
-│   ├── index.html
-│   └── ...
+│   └── index.html
+│
 ├── models/
-│   ├── drishti.pt
-│   └── ...
+│   └── drishti.pt
+│
 ├── screenshots/
 │   └── marine-sonar-dashboard.png
+│
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+```
 
-🚀 Run Locally
+> Additional training, evaluation, and dataset files may exist in the repository but are omitted from this high-level structure for readability.
 
-1. Clone the repository
+---
 
+## ⚙️ Run Locally
+
+### 1. Clone
+
+```bash
 git clone https://github.com/ruchaakadam/marine-sonar.git
 cd marine-sonar
+```
 
-2. Create / activate a virtual environment
+### 2. Create a virtual environment
 
-On macOS/Linux:
+**macOS / Linux**
 
+```bash
 python3 -m venv .ml-venv
 source .ml-venv/bin/activate
+```
 
-On Windows PowerShell:
+**Windows PowerShell**
 
+```powershell
 python -m venv .ml-venv
 .\.ml-venv\Scripts\Activate.ps1
+```
 
-3. Install dependencies
+### 3. Install dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
-4. Start the FastAPI backend
+### 4. Start the backend
 
+```bash
 python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
+```
 
-The API will be available at:
+Backend:
 
+```text
 http://127.0.0.1:8000
+```
 
-FastAPI documentation:
+API documentation:
 
+```text
 http://127.0.0.1:8000/docs
+```
 
-5. Start the frontend
+### 5. Start the frontend
 
-Open a second terminal and run:
+Open a second terminal:
 
+```bash
 python3 -m http.server 5500 --directory frontend
+```
 
-Then open:
+Frontend:
 
+```text
 http://127.0.0.1:5500
+```
 
-🔌 API Endpoints
+---
 
-Endpoint
+## 🔌 API
 
-Method
+| Endpoint | Method | Function |
+|---|---|---|
+| `/api/health` | GET | Backend/model health |
+| `/api/detect` | POST | Analyze a sonar image |
+| `/api/track` | POST | Multi-scan tracking |
+| `/api/report` | POST | Generate mission report |
 
-Purpose
+---
 
-/api/health
+## 🔬 Detection Workflow
 
-GET
+```text
+SONAR IMAGE
+     ↓
+UPLOAD
+     ↓
+YOLO INFERENCE
+     ↓
+TARGET DETECTION
+     ↓
+CONFIDENCE / RESULT ANALYSIS
+     ↓
+MULTI-SCAN TRACKING
+     ↓
+MISSION REPORT
+```
 
-Check API and model status
+---
 
-/api/detect
+## 🌐 Deployment
 
-POST
+The project uses a separate frontend and FastAPI backend architecture.
 
-Run sonar-image detection
+The codebase is maintained with Git/GitHub, and the backend has been configured for cloud deployment.
 
-/api/track
+For development and testing, the local setup above runs the frontend and backend independently.
 
-POST
+---
 
-Process multi-scan tracking
+## 🎓 Project Goal
 
-/api/report
+Marine Sonar AI demonstrates how computer vision can assist underwater exploration by automatically analyzing sonar imagery and organizing the results into a mission-oriented workflow.
 
-POST
+The project focuses on combining **AI detection, visualization, tracking, and reporting** in a single application.
 
-Generate a mission PDF report
+---
 
-🔬 Example Workflow
+## 🔮 Future Scope
 
-1. Open the Marine Sonar AI dashboard
-        ↓
-2. Upload a sonar image
-        ↓
-3. Run AI detection
-        ↓
-4. View detected objects and confidence
-        ↓
-5. Add additional scans if required
-        ↓
-6. Track detections across scans
-        ↓
-7. Generate a mission report
+- Real-time sonar-stream analysis
+- Larger marine-specific training datasets
+- Additional underwater target classes
+- Improved multi-object tracking
+- ROV / autonomous underwater vehicle integration
+- Historical mission comparison
+- Geographic mission history
+- Model optimization for low-resource environments
 
-🌐 Deployment
+---
 
-The project is structured with a separate frontend and FastAPI backend so that the two components can be deployed independently.
+## 👥 Project
 
-The repository has been connected to GitHub and the FastAPI backend has also been configured for cloud deployment.
+**Marine Sonar AI — AI4Shipwrecks**
 
-For local development, use the commands in the Run Locally section.
-
-🎓 Project Purpose
-
-Marine Sonar AI is developed as an AI-assisted marine exploration and underwater-object detection project. The goal is to demonstrate how computer vision can help reduce manual effort when analyzing sonar imagery and support faster interpretation of underwater scenes.
-
-🔮 Future Scope
-
-Potential future improvements include:
-
-Real-time sonar-stream processing
-
-Improved marine-specific training datasets
-
-More specialized object classes
-
-Improved multi-object tracking
-
-Geographic mission history
-
-Real-time vessel/ROV integration
-
-Model optimization for low-resource deployment
-
-Authentication and multi-user missions
-
-Advanced analytics and historical detection comparison
-
-👥 Team
-
-Marine Sonar AI / AI4Shipwrecks
-
-Built as an AI and computer-vision project focused on underwater sonar analysis.
-
-📌 Notes
-
-AI inference requires the trained model files included/configured for the project.
-
-Model files can require significantly more RAM during inference than their file size suggests.
-
-For local development, make sure the frontend API URL points to the local FastAPI server when testing locally.
+Built as an AI/computer-vision project for underwater sonar analysis.
